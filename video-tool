@@ -1,0 +1,51 @@
+#!/bin/bash
+
+
+####################################################
+#                 Music_Finder V0.1                #
+#  https://github.com/hessamashari/video-tool.git  #
+####################################################
+
+
+normal="$(printf '\033[0m')"          # text mode
+# Colors
+red="$(printf '\033[0;31m')"  		  # red
+green="$(printf '\033[0;32m')"        # green
+orange="$(printf '\033[0;33m')"       # orange
+blue="$(printf '\033[0;34m')"         # blue
+white="$(printf '\033[0;37m')"        # white
+
+# ----------\Main function\----------
+function main() {
+	read -p "${green}What can i do for you ???${normal}
+	1)${orange}kam kardan hajm film${normal}
+	2)${orange}tageer format film${normal}
+
+	Enter number if selected item : " selectedItem
+	if [[ "$selectedItem" == "1" ]]; then
+		kam
+	elif [[ "$selectedItem" == "2" ]]; then
+		echo "helo"
+	fi
+}
+
+# ----------\Select movie function\----------
+function select_movie() {
+	echo "hello"
+}
+
+# ----------\Help function\----------
+function usage() {
+	echo -e "\n Usage: video-tool [ -h | --help ],  [ --uninstall ],   [ -U | --update ]"
+	return
+}
+
+# ----------\Input options\----------
+case "$1" in
+    "")    main    ;;
+    "--update" | "-U")    update    ;;
+	"--uninstall")    uninstall    ;;
+	"--help" | "-h")    usage    ;;
+	*)    usage    ;;
+esac
+exit 0
