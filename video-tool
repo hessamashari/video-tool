@@ -18,20 +18,25 @@ white="$(printf '\033[0;37m')"        # white
 # ----------\Main function\----------
 function main() {
 	read -p "${green}What can i do for you ???${normal}
-	1)${orange}kam kardan hajm film${normal}
-	2)${orange}tageer format film${normal}
+	1)${orange} Reduce video size.${normal}
+	2)${orange} Change the video format.${normal}
 
-	Enter number if selected item : " selectedItem
+	Enter the number of the option that you selected : " selectedItem
 	if [[ "$selectedItem" == "1" ]]; then
-		kam
+		reduce_video_size
 	elif [[ "$selectedItem" == "2" ]]; then
 		echo "helo"
 	fi
 }
 
 # ----------\Select movie function\----------
-function select_movie() {
+function select_video() {
 	echo "hello"
+}
+
+# ----------\Reduce video size function\----------
+function reduce_video_size() {
+
 }
 
 # ----------\Help function\----------
