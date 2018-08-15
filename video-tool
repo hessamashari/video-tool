@@ -122,11 +122,11 @@ function reduce_video_size() {
 				echo -e "${green}Your video is ready : ${orange}$newVideoName${normal}"
 			else
 				echo -e "\n"
-				echo -e "${red} Procces doesn't finish succesfully!${normal}"
+				echo -e "${red}Proccess doesn't finish succesfully!${normal}"
 				exit 1
 			fi
 		elif [[ "$renameNewVideo" == "n" || "$renameNewVideo" == "N" ]]; then
-			
+
 			ffmpeg -i "$inputVideo" -vcodec h264 -acodec aac -strict -2 "$(echo "$inputVideo" | tr '.' ' ').mp4"
 
 			if [[ "$?" == "0" ]]; then
@@ -134,7 +134,7 @@ function reduce_video_size() {
 				eecho -e "${green}Your video is ready : ${orange}$(echo "$inputVideo" | tr '.' ' ').mp4${normal}"
 			else
 				echo -e "\n"
-				echo -e "${red} Procces doesn't finish succesfully!${normal}"
+				echo -e "${red}Proccess doesn't finish succesfully!${normal}"
 				exit 1
 			fi
 		else
