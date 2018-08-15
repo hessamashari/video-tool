@@ -15,23 +15,41 @@ orange="$(printf '\033[0;33m')"       # orange
 blue="$(printf '\033[0;34m')"         # blue
 white="$(printf '\033[0;37m')"        # white
 
-# ----------\Main function\----------
-function main() {
-	echo -e "ُ${red}+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+${normal}"
-	read -p "${green}What can i do for you ???${normal}
-	1)${orange} Reduce video size.${normal}
-	2)${orange} Change the video format.${normal}
+# ----------\Find video function\----------
+function find_video() {
+	local inputDir="$1"
+	local IFS=":"
 
-	Enter the number of the option that you selected : " selectedItem
-	echo -e "ُ${red}+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+${normal}"
-	if [[ "$selectedItem" == "1" ]]; then
-		select_video_path
-	elif [[ "$selectedItem" == "2" ]]; then
-		echo "helo"
+	read -p "Please enter the name of video : " videoName
+
+	local videoTypes="\.webm$|\.flv$|\.vob$|\.ogg$|\.ogv$|\.drc$|\.gifv$|\.mng$|\.avi$|\.mov$|\.qt$|\.wmv$|\.yuv$|\.rm$|\.rmvb$|/.asf$|\.amv$|\.mp4$|\.m4v$|\.mp*$|\.m?v$|\.svi$|\.3gp$|\.ts$|\.flv$|\.f4v$"
+	if [[ "$inputDir" == "/" ]]; then
+		sudo find / -type f -iname "*$videoName*" | grep -E "$videoTypes"
+		local searchDir=$(sudo find / -type f -iname "*$videoName*" | grep -E "$videoTypes")
 	else
-		echo -e "${red}Invalid argument!${normal}"
-		exit 1
+		find "$inputDir" -type f -iname "*$videoName*" | grep -E "$videoTypes"
+		local searchDir=$(find "$inputDir" -type f -iname "*$videoName*" | grep -E "$videoTypes")
 	fi
+
+		echo $searchDir > $HOME/searchDir
+		sed -i ':a;N;$!ba;s/\n/:/g' $HOME/searchDir
+
+	for videoPath in $(cat $HOME/searchDir); do
+		echo -e "\n"
+		read -p "${green} Would you like to work with ${orange}'$videoPath'${normal}? [Y/n] "  workWithThis
+
+		if [[ "$workWithThis" == "" || "$workWithThis" == "y" || "$workWithThis" == "Y" ]]; then
+			refer-related-func "$videoPath"
+		elif [[ "$workWithThis" == "n" || "$workWithThis" == "N" ]]; then
+			continue
+		else
+			echo -e "${red}Invalid argument!${normal}"
+			continue
+		fi
+	done
+
+	# Remove searchDir file
+	rm -rf $HOME/searchDir
 }
 
 # ----------\Select movie function\----------
@@ -47,12 +65,22 @@ function select_video_path() {
 			# Search all of file system
 		    echo -e "This operation may take a while!"
 
+			find_video "/"
 		elif [[ "$searchAllSystem" == "n" || "$searchAllSystem" == "N" ]]; then
 			read -p "Do you like search this directory? [Y/n] " workingDirectory
 
 			if [[ "$workingDirectory" == "" || "$workingDirectory" == "y" || "$workingDirectory" == "Y" ]]; then
 				# Search current directory
-				echo "hello"
+
+				find_video "$PWD"
+			elif [[ "$workingDirectory" == "n" || "$workingDirectory" == "N" ]]; then
+				# Search entered path
+				read -p "Enter a directory : " -i "" -e userEnteredPath
+					if [[ "$userEnteredPath" == "/" ]]; then
+						echo -e "${red}You have to chose first option :)${normal}"
+					else
+						find_video "$userEnteredPath"
+					fi
 			else
 				echo -e "${red}Invalid argument!${normal}"
 				exit 1
@@ -64,6 +92,8 @@ function select_video_path() {
 	elif [[ "$searchVideoAnswer" == "location" || "$searchVideoAnswer" == "L" || "$searchVideoAnswer" == "l" ]]; then
 		# Read path/to/video
 		read -p "Enter path of the video : " -i "" -e videoPath
+
+		refer-related-func "$videoPath"
 	else
 		echo -e "${red}Invalid argument!${normal}"
 		exit 1
@@ -72,7 +102,55 @@ function select_video_path() {
 
 # ----------\Reduce video size function\----------
 function reduce_video_size() {
-	echo "hello"
+	local inputVideo="$1"
+
+	if [[ -r "$inputVideo" ]]; then
+		read -p "Do you want to rename the new video? [Y/n] " renameNewVideo
+
+		if [[ "$renameNewVideo" == "" || "$renameNewVideo" == "Y" || "$renameNewVideo" == "y" ]]; then
+			ffmpeg -i "$inputVideo" -vcodec h264 -acodec aac -strict -2
+		elif [[ "$renameNewVideo" == "n" || "$renameNewVideo" == "N" ]]; then
+			ffmpeg -i "$inputVideo" -vcodec h264 -acodec aac -strict -2 "$(echo "$inputVideo" | tr '.' ' ').mp4"
+
+			echo -e "${green}\n Your video is ready : ${orange}$(echo "$inputVideo" | tr '.' ' ').mp4${normal}"
+		fi
+	else
+		echo -e "${red}\nYou haven't access to ${orange}'$inputVideo'${normal}"
+		exit 1
+	fi
+}
+
+# ----------\Change video format function\----------
+function change_vide_format() {
+	echo "2"
+}
+
+# ----------\Refer to related function\----------
+function refer-related-func() {
+	local pathToVideo="$1"
+
+	if [[ "$selectedItem" == "1" ]]; then
+		reduce_video_size "$pathToVideo"
+	elif [[ "$selectedItem" == "2" ]]; then
+		change_vide_format "$pathToVideo"
+	fi
+}
+
+# ----------\Main function\----------
+function main() {
+	echo -e "ُ${red}+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+${normal}"
+	read -p "${green}What can i do for you ???${normal}
+	1)${orange} Reduce video size.${normal}
+	2)${orange} Change the video format.${normal}
+
+	Enter the number of the option that you selected : " selectedItem
+	echo -e "ُ${red}+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+${normal}"
+	if [[ "$selectedItem" == "1" || "$selectedItem" == "2" ]]; then
+		select_video_path
+	else
+		echo -e "${red}Invalid argument!${normal}"
+		exit 1
+	fi
 }
 
 # ----------\Help function\----------
