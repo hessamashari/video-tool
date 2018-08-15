@@ -52,11 +52,21 @@ function select_video_path() {
 
 			if [[ "$workingDirectory" == "" || "$workingDirectory" == "y" || "$workingDirectory" == "Y" ]]; then
 				# Search current directory
+				echo "hello"
+			else
+				echo -e "${red}Invalid argument!${normal}"
+				exit 1
+			fi
+		else
+		    echo -e "${red}Invalid argument!${normal}"
+			exit 1
+		fi
 	elif [[ "$searchVideoAnswer" == "location" || "$searchVideoAnswer" == "L" || "$searchVideoAnswer" == "l" ]]; then
 		# Read path/to/video
 		read -p "Enter path of the video : " -i "" -e videoPath
 	else
 		echo -e "${red}Invalid argument!${normal}"
+		exit 1
 	fi
 }
 
