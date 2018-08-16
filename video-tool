@@ -2,9 +2,11 @@
 
 	# v0.1 --(20180815) add reduce_video_size function
 	# v0.2 --(20180816) add convert_video_format function
-	#
+	# v0.3 --(20180816) add show_version and uninstall function
+	# v0.4 --(20180816) add update function and installer script
+	
 ####################################################
-#                 Video_Tool V0.3                  #
+#                 Video_Tool V0.4                  #
 #  https://github.com/hessamashari/video-tool.git  #
 ####################################################
 
@@ -319,10 +321,52 @@ function uninstall() {
 	fi
 }
 
+# ----------\Update function\----------
+function update() {
+	clear
+
+	# Check place of repo for existing files
+	if [[ -d /tmp/video-tool/ ]]; then
+		sudo rm -rf /tmp/video-tool/
+	fi
+
+	# Check access of /tmp
+	if cd /tmp/ &> /dev/null; then
+		git clone https://github.com/hessamashari/video-tool.git /tmp/video-tool
+		sleep 2
+		echo -e "\n"
+		# Check access of /tmp/video-tool
+		if cd /tmp/video-tool/ &> /dev/null; then
+			# Replace older program with newer
+			sudo cp /tmp/video-tool/video-tool /usr/bin/video-tool
+			sudo chmod 755 /usr/bin/video-tool
+			echo -e "\n"
+			# Check operation
+			if [[ "$?" == "0" ]]; then
+				echo -e " ${green}Music_Finder updated succesfully! ${normal}"
+			else
+				echo -e " ${red}Music_Finder doesn't update succesfully! ${normal}"
+				exit 1
+			fi
+		else
+			echo -e "\n"
+			echo -e "${red}Cannot cd to directory ${orange}'/tmp/video-tool'${normal}"
+			exit 1
+		fi
+	else
+		echo -e "\n"
+		echo -e "${red}Cannot cd to directory ${orange}'/tmp'${normal}"
+		exit 1
+	fi
+
+	# Delet cloned repository
+	sudo rm -rf /tmp/video-tool
+}
+
 # ----------\Show version function\---------
 function show_version() {
 	echo -e "\n"
-	echo -e "Music_Finder, version v0.4 (x86_64-unknown-linux-gnu)
+	echo -e "Video_Tool, version v0.4 (x86_64-unknown-linux-gnu)
 Copyright (C) 2018 Free Software Foundation, Inc.
 License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>
 
