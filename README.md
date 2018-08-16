@@ -1,10 +1,21 @@
 # Hi. This script can
 
-- Reduce size of videos
-- Convert format of videos
-- ... in progress
+- Reduce size 0f video
+- Convert format of video
+- and more in progress
 
 ## Installation
+
+### Automatically
+
+```sh
+$ git clone https://github.com/hessamashari/video-tool.git
+$ cd video-tool
+$ chmod +x install.sh
+$ ./install.sh
+```
+
+### Manually
 
 #### Install dependencies
 
@@ -41,6 +52,18 @@ $ sudo cp video-tool /usr/bin/video-tool
 $ video-tool
 ```
 
+## Update
+
+```sh
+$ video-tool --update
+```
+
+## Uninstall
+
+```sh
+$ video-tool --uninstall
+```
+
 ## Help
 
 ```sh
@@ -49,5 +72,6 @@ $ music-player --help
 
 Exit the program with Ctrl+C :)
 
-Pleas dont forget star  
+
+Pleas dont forget star
 Tnx!
