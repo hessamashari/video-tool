@@ -319,10 +319,22 @@ function uninstall() {
 	fi
 }
 
-# ----------\Help function\----------
+# ----------\Show version function\---------
+function show_version() {
+	echo -e "\n"
+	echo -e "Music_Finder, version v0.4 (x86_64-unknown-linux-gnu)
+Copyright (C) 2018 Free Software Foundation, Inc.
+License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>
+
+built with bash 4.4.23 (GNU/bash)
+"
+	return
+}
+
+# ----------\Show help function\----------
 function usage() {
 	echo "\n"
-	echo -e "\n Usage: video-tool [ -h | --help ],  [ --uninstall ],   [ -U | --update ]"
+	echo -e " Usage: video-tool [ -h | --help ],  [ --uninstall ],   [ -U | --update ]"
 	return
 }
 
@@ -332,6 +344,7 @@ case "$1" in
     "--update" | "-U")    update    ;;
 	"--uninstall")    uninstall    ;;
 	"--help" | "-h")    usage    ;;
+	"--version" | "-V")    show_version    ;;
 	*)    usage    ;;
 esac;
 exit 0
