@@ -205,7 +205,7 @@ function convert_video_format() {
 		# Check operation
 		if [[ "$?" == "0" ]]; then
 			echo -e "\n"
-			echo -e "${green}Your video is ready : ${orange}$(echo "$inputVideo" | tr '.' ' ')"."${videoFormts[newVideoFormat]}${normal}"
+			echo -e "${green}Your video is ready : ${orange}$(echo "$inputVideo" | tr '.' ' ')".${videoFormts[$(("$newVideoFormat"-1))]}${normal}"
 		else
 			echo -e "\n"
 			echo -e "${red}Proccess doesn't finish succesfully!${normal}"
