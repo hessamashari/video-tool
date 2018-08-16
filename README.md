@@ -73,5 +73,5 @@ $ music-player --help
 Exit the program with Ctrl+C :)
 
 
-Pleas dont forget star
+Pleas dont forget star  
 Tnx!
