@@ -240,7 +240,7 @@ function main() {
 
 	Enter the number of the option that you selected : " selectedItem
 	echo -e "ُ${red}+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+${normal}"
-	if [[ "$selectedItem" == "1" || "$selectedItem" == "2" ]]; then
+	if [[ "$selectedItem" -gt "0" && "$selectedItem" -gt "3" ]]; then
 		select_video_path
 	else
 		echo -e "${red}Invalid argument!${normal}"
