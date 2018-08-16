@@ -22,13 +22,14 @@ function find_video() {
 	clear
 
 	local inputDir="$1"
-	local IFS=":" # Use in line 35/36
+	local IFS=":" # Use for sed
 
 	read -p "Please enter the name of video : " videoName
 
 	# Separating files that have video format
 	local videoTypes="\.webm$|\.flv$|\.vob$|\.ogg$|\.ogv$|\.drc$|\.gifv$|\.mng$|\.avi$|\.mov$|\.qt$|\.wmv$|\.yuv$|\.rm$|\.rmvb$|/.asf$|\.amv$|\.mp4$|\.m4v$|\.mp*$|\.m?v$|\.svi$|\.3gp$|\.ts$|\.flv$|\.f4v$"
 
+	echo -e "\n"
 	if [[ "$inputDir" == "/" ]]; then
 		sudo find / -type f -iname "*$videoName*" | grep -E "$videoTypes"
 		local searchDir=$(sudo find / -type f -iname "*$videoName*" | grep -E "$videoTypes")
@@ -162,7 +163,7 @@ function convert_video_format() {
 	clear
 
 	local inputVideo="$1"
-	local videoFormts=("mkv" "mp4" "mp3" "mov" "ogg" "wmv" "webm" "vob" "avi" "flv" "3gp" "ogv" "m4v" "mng" "fv4" "svi" "amv") # Use for using fewer if in line 182:190
+	local videoFormts=("mkv" "mp4" "mp3" "mov" "ogg" "wmv" "webm" "vob" "avi" "flv" "3gp" "ogv" "m4v" "mng" "fv4" "svi" "amv") # Use for using fewer if
 
 	# Check access to video
 	if [[ -r "$inputVideo" ]]; then
@@ -205,7 +206,7 @@ function convert_video_format() {
 		# Check operation
 		if [[ "$?" == "0" ]]; then
 			echo -e "\n"
-			echo -e "${green}Your video is ready : ${orange}$(echo "$inputVideo" | tr '.' ' ')".${videoFormts[$(("$newVideoFormat"-1))]}${normal}"
+			echo -e "${green}Your video is ready : ${orange}"$(echo "$inputVideo" | tr '.' ' ')".${videoFormts[$(("$newVideoFormat"-1))]} ${normal}"
 		else
 			echo -e "\n"
 			echo -e "${red}Proccess doesn't finish succesfully!${normal}"
