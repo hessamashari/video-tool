@@ -63,7 +63,7 @@ function find_video() {
 # ----------\Select movie function\----------
 function select_video_path() {
 	# Ask for video path
-	read -p "${green}Do you want to search video for you ${orange}{search / s}${green} or you know the video location ${range}{location / l}${normal} : " searchVideoAnswer
+	read -p "${green}Do you want to search video for you ${orange}{search / s}${green} or you know the video location ${orange}{location / l}${normal} : " searchVideoAnswer
 	clear
 
 	echo -e "ُ${red}+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+${normal}"
@@ -189,13 +189,13 @@ function convert_video_format() {
 		Enter the number of the option that you selected : " newVideoFormat
 		echo -e "ُ${red}+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+${normal}"
 
-		if [[ "$newVideoFormat" -gt "-1" && "$newVideoFormat" -lt "18" ]]; then
+		if [[ "$newVideoFormat" -gt "-1" && "$newVideoFormat" -lt $((${#videoFormts[@]}+1)) ]]; then
 			echo -e "${green}This operation may take a while because I do not like to put down the quality of your video!${normal}"
 			echo -e "\n"
 			sleep 2
 
 			# Change format
-			ffmpeg -i "$inputVideo" -c:v libx264 "$(echo "$inputVideo" | tr '.' ' ')"."${videoFormts[newVideoFormat]}"
+			ffmpeg -i "$inputVideo" -c:v libx264 "$(echo "$inputVideo" | tr '.' ' ')".${videoFormts[$(("$newVideoFormat"-1))]}
 
 		else
 			echo -e "${red}Your selected number doesn't match with my options!${normal}"
@@ -240,7 +240,7 @@ function main() {
 
 	Enter the number of the option that you selected : " selectedItem
 	echo -e "ُ${red}+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+${normal}"
-	if [[ "$selectedItem" -gt "0" && "$selectedItem" -gt "3" ]]; then
+	if [[ "$selectedItem" -gt "0" && "$selectedItem" -lt "3" ]]; then
 		select_video_path
 	else
 		echo -e "${red}Invalid argument!${normal}"
