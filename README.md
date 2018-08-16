@@ -1,6 +1,6 @@
 # Hi. This script can
 
-- Reduce size 0f video
+- Reduce size of video
 - Convert format of video
 - and more in progress
 
