@@ -67,11 +67,11 @@ $ video-tool --uninstall
 ## Help
 
 ```sh
-$ music-player --help
+$ video-tool --help
 ```
 
 Exit the program with Ctrl+C :)
 
 
-Pleas dont forget star  
+Pleas dont forget star
 Tnx!
