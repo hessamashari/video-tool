@@ -4,7 +4,7 @@
 	# v0.2 --(20180816) add convert_video_format function
 	# v0.3 --(20180816) add show_version and uninstall function
 	# v0.4 --(20180816) add update function and installer script
-	
+
 ####################################################
 #                 Video_Tool V0.4                  #
 #  https://github.com/hessamashari/video-tool.git  #
@@ -44,11 +44,11 @@ function find_video() {
 	fi
 
 		# Creat file with found videos and change \n to : on it
-		echo $searchDir > $HOME/searchDir
-		sed -i ':a;N;$!ba;s/\n/:/g' $HOME/searchDir
+		echo $searchDir > /tmp/searchDir
+		sed -i ':a;N;$!ba;s/\n/:/g' /tmp/searchDir
 
 	# Ask for all videos were found
-	for videoPath in $(cat $HOME/searchDir); do
+	for videoPath in $(cat /tmp/searchDir); do
 		echo -e "\n"
 		read -p "${green} Would you like to work with ${orange}'$videoPath'${normal}? [Y/n] "  workWithThis
 
@@ -63,7 +63,7 @@ function find_video() {
 	done
 
 	# Remove searchDir file
-	rm -rf $HOME/searchDir
+	rm -rf /tmp/searchDir
 }
 
 # ----------\Select movie function\----------
