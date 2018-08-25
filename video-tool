@@ -259,10 +259,10 @@ function main() {
 function uninstall() {
 	clear
 
-	read -p "${red}Are you sure to uninstall video-tool??!! [y/N] ${normal}" deletMusicFinder
+	read -p "${red}Are you sure to uninstall video-tool??!! [y/N] ${normal}" deletVideoTool
 
 	# Remove dependencies
-	if [[ "$deletMusicFinder" == "y" || "$deletMusicFinder" == "Y" ]]; then
+	if [[ "$deletVideoTool" == "y" || "$deletVideoTool" == "Y" ]]; then
 		deleteDependencies="0"
 		# Checking if the distro is DebianBase / ArchBase / RedHatBase / SuseBase and running the correct command
 
@@ -312,7 +312,7 @@ function uninstall() {
 			echo -e "${green}video-tool doesn't uninstall succesfully :) ${normal}"
 			exit 1
 		fi
-	elif [[ "$deletMusicFinder" == "" || "$deletMusicFinder" == "n" || "$deletMusicFinder" == "N" ]]; then
+	elif [[ "$deletVideoTool" == "" || "$deletVideoTool" == "n" || "$deletVideoTool" == "N" ]]; then
 		echo -e "\n"
 		echo -e "${green}video-tool is still installed :) ${normal}"
 		return
@@ -344,9 +344,9 @@ function update() {
 			echo -e "\n"
 			# Check operation
 			if [[ "$?" == "0" ]]; then
-				echo -e " ${green}Music_Finder updated succesfully! ${normal}"
+				echo -e " ${green}Video_Tool updated succesfully! ${normal}"
 			else
-				echo -e " ${red}Music_Finder doesn't update succesfully! ${normal}"
+				echo -e " ${red}Video_Tool doesn't update succesfully! ${normal}"
 				exit 1
 			fi
 		else
