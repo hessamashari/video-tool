@@ -35,25 +35,25 @@ echo -e "${green} Enter your password for install dependencies\n${normal}"
 if pacman -Q &> /dev/null; then # Check Arch
 	sudo pacman -S ffmpeg git --needed
 	# Check user's entered password
-	if [[ "$?" == "1" ]]; then
+	if [[ !("$?" == "0") ]]; then
 		checkDistro="1"
 	fi
 elif apt list --installed &> /dev/null; then # Check Debian
 	sudo apt install ffmpeg git
 	# Check user's entered password
-	if [[ "$?" == "1" ]]; then
+	if [[ !("$?" == "0") ]]; then
 		checkDistro="1"
 	fi
 elif dnf list &> /dev/null; then # Check Fedora
 	sudo dnf install ffmpeg git
 	# Check user's entered password
-	if [[ "$?" == "1" ]]; then
+	if [[ !("$?" == "0") ]]; then
 		checkDistro="1"
 	fi
 elif zypper search i+ &> /dev/null; then # Check openSUSE
 	sudo zypper install ffmpeg git
 	# Check user's entered password
-	if [[ "$?" == "1" ]]; then
+	if [[ !("$?" == "0") ]]; then
 		checkDistro="1"
 	fi
 else
