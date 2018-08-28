@@ -69,7 +69,7 @@ if [ "$checkDistro" == "0" ]; then
 
 	sudo mkdir /usr/share/video-tool
 	sudo cp -r src/ /usr/share/video-tool/
-	for i in $(find -type f /usr/share/video-tools); do 
+	for i in $(find /usr/share/video-tool -type f); do 
 		sudo sed -i "s/source src/source \/usr\/share\/video-tool\/src/g" $i 
 	done
 	sudo chmod -R 755 /usr/share/video-tool/
