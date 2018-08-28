@@ -64,8 +64,11 @@ fi
 
 # ----------\Adding video-tool Command\----------
 if [ "$checkDistro" == "0" ]; then
-    sudo cp video-tool /usr/bin/video-tool
-    sudo chmod 755 /usr/bin/video-tool
+	sed "s/source src/source \/usr\/share\/src/g" video-tool | sudo tee /usr/bin/video-tool 1>/dev/null 2>&1
+
+	sudo mkdir /usr/share/video-tool
+	cp -r src/ /usr/share/video-tool/
+	sudo sed -i "s/source src/source \/usr\/share\/src/g" $(find /usr/share/video-tool) 
 	if [[ "$?" == "0" ]]; then
 		echo -e "\n ${green}video-tool succesfully installed ${normal}"
 		echo -e "\n Use: ${orange}video-tool --help${normal} for other information"

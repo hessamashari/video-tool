@@ -1,0 +1,2505 @@
+#!/bin/bash
+
+	# v0.1 --(20180815) add reduce_video_size function
+	# v0.2 --(20180816) add convert_video_format function
+	# v0.3 --(20180816) add show_version and uninstall function
+	# v0.4 --(20180816) add update function and installer script
+
+####################################################
+#                 Video_Tool V0.4                  #
+#  https://github.com/hessamashari/video-tool.git  #
+####################################################
+
+	# author : Hessam Ashari
+	# gitlab : https://gitlab.com/hessam.ashari/video-tool
+	# github : https://github.com/hessamashari/video-tool
+	# Email  : hessam.ashari@gmail.com
+
+normal="$(printf '\033[0m')"          # text mode
+# Colors
+red="$(printf '\033[0;31m')"  		  # red
+green="$(printf '\033[0;32m')"        # green
+orange="$(printf '\033[0;33m')"       # orange
+blue="$(printf '\033[0;34m')"         # blue
+white="$(printf '\033[0;37m')"        # white
+
+# Import functions
+source /usr/share/src/main/select.sh
+
+# ----------\Main function\----------
+function main() {
+	clear
+
+	echo -e "ُ${red}+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+${normal}"
+	read -p "${green}What can I do for you ???${normal}
+	1)${orange} Reduce video size.${normal}
+	2)${orange} Convert the video format.${normal}
+
+	Enter the number of the option that you selected : " selectedItem
+	echo -e "ُ${red}+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+${normal}"
+	if [[ "$selectedItem" -gt "0" && "$selectedItem" -lt "3" ]]; then
+		select_video_path
+	else
+		echo -e "${red}Invalid argument!${normal}"
+		exit 1
+	fi
+}
+
+# ----------\Uninstall function\----------
+function uninstall() {
+	clear
+
+	read -p "${red}Are you sure to uninstall video-tool??!! [y/N] ${normal}" deletVideoTool
+
+	# Remove dependencies
+	if [[ "$deletVideoTool" == "y" || "$deletVideoTool" == "Y" ]]; then
+		deleteDependencies="0"
+		# Checking if the distro is DebianBase / ArchBase / RedHatBase / SuseBase and running the correct command
+
+		if pacman -Q &> /dev/null; then # Check Arch
+			sudo pacman -Rs ffmpeg
+			# Check user's entered password
+			if [[ !("$?" == "0") ]]; then
+				deleteDependencies="1"
+			fi
+		elif apt list --installed &> /dev/null; then # Check Debian
+			sudo apt remove ffmpeg
+			# Check user's entered password
+			if [[ !("$?" == "0") ]]; then
+				deleteDependencies="1"
+			fi
+		elif dnf list &> /dev/null; then # Check Fedora
+			sudo dnf remove ffmpeg
+			# Check user's entered password
+			if [[ !("$?" == "0") ]]; then
+				deleteDependencies="1"
+			fi
+		elif zypper search i+ &> /dev/null; then # Check openSUSE
+			sudo zypper remove ffmpeg
+			# Check user's entered password
+			if [[ !("$?" == "0") ]]; then
+				deleteDependencies="1"
+			fi
+		else
+			echo -e "${red}Your distro is neither ArchBase or DebianBase or RedHatBase or SuseBase So,
+			 The script is not going to work in your distro and you have uninstall the dependencies manually.${normal}"
+			deleteDependencies="1"
+		fi
+
+		# Removing video-tool Command
+		if [[ "$deleteDependencies" == "0" ]]; then
+			sudo rm -f /usr/bin/video-tool
+			if [[ "$?" == "0" ]]; then
+				echo -e "\n"
+				echo -e "${red}video-tool succesfully uninstalled :( ${normal}"
+			else
+				echo -e "\n"
+				echo -e "${green}video-tool doesn't uninstall succesfully :) ${normal}"
+				exit 1
+			fi
+		else
+			echo -e "\n"
+			echo -e "${green}video-tool doesn't uninstall succesfully :) ${normal}"
+			exit 1
+		fi
+	elif [[ "$deletVideoTool" == "" || "$deletVideoTool" == "n" || "$deletVideoTool" == "N" ]]; then
+		echo -e "\n"
+		echo -e "${green}video-tool is still installed :) ${normal}"
+		return
+	else
+		echo -e "${red}Invalid argument! ${normal}"
+		exit 1
+	fi
+}
+
+# ----------\Update function\----------
+function update() {
+	clear
+
+	# Check place of repo for existing files
+	if [[ -d /tmp/video-tool/ ]]; then
+		sudo rm -rf /tmp/video-tool/
+	fi
+
+	# Check access of /tmp
+	if cd /tmp/ &> /dev/null; then
+		git clone https://github.com/hessamashari/video-tool.git /tmp/video-tool
+		sleep 2
+		echo -e "\n"
+		# Check access of /tmp/video-tool
+		if cd /tmp/video-tool/ &> /dev/null; then
+			# Replace older program with newer
+			sudo cp /tmp/video-tool/video-tool /usr/bin/video-tool
+			sudo chmod 755 /usr/bin/video-tool
+			echo -e "\n"
+			# Check operation
+			if [[ "$?" == "0" ]]; then
+				echo -e " ${green}Video_Tool updated succesfully! ${normal}"
+			else
+				echo -e " ${red}Video_Tool doesn't update succesfully! ${normal}"
+				exit 1
+			fi
+		else
+			echo -e "\n"
+			echo -e "${red}Cannot cd to directory ${orange}'/tmp/video-tool'${normal}"
+			exit 1
+		fi
+	else
+		echo -e "\n"
+		echo -e "${red}Cannot cd to directory ${orange}'/tmp'${normal}"
+		exit 1
+	fi
+
+	# Delet cloned repository
+	sudo rm -rf /tmp/video-tool
+}
+
+# ----------\Show version function\---------
+function show_version() {
+	echo -e "\n"
+	echo -e "Video_Tool, version v0.4 (x86_64-unknown-linux-gnu)
+Copyright (C) 2018 Free Software Foundation, Inc.
+License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>
+
+built with bash 4.4.23 (GNU/bash)
+"
+	return
+}
+
+# ----------\Show help function\----------
+function usage() {
+	echo "\n"
+	echo -e " Usage: video-tool [ -h | --help ],  [ -V | --version ], [ --uninstall ],   [ -U | --update ]"
+	return
+}
+
+# ----------\Input options\----------
+case "$1" in
+    "")    main    ;;
+    "--update" | "-U")    update    ;;
+	"--uninstall")    uninstall    ;;
+	"--help" | "-h")    usage    ;;
+	"--version" | "-V")    show_version    ;;
+	*)    usage    ;;
+esac;
+exit 0
+#!/bin/bash
+
+	# v0.1 --(20180815) add reduce_video_size function
+	# v0.2 --(20180816) add convert_video_format function
+	# v0.3 --(20180816) add show_version and uninstall function
+	# v0.4 --(20180816) add update function and installer script
+
+####################################################
+#                 Video_Tool V0.4                  #
+#  https://github.com/hessamashari/video-tool.git  #
+####################################################
+
+	# author : Hessam Ashari
+	# gitlab : https://gitlab.com/hessam.ashari/video-tool
+	# github : https://github.com/hessamashari/video-tool
+	# Email  : hessam.ashari@gmail.com
+
+normal="$(printf '\033[0m')"          # text mode
+# Colors
+red="$(printf '\033[0;31m')"  		  # red
+green="$(printf '\033[0;32m')"        # green
+orange="$(printf '\033[0;33m')"       # orange
+blue="$(printf '\033[0;34m')"         # blue
+white="$(printf '\033[0;37m')"        # white
+
+# ----------\Find video function\----------
+function find_video() {
+	clear
+
+	local inputDir="$1"
+	local IFS=":" # Use for sed
+
+	read -p "Please enter the name of video : " videoName
+
+	# Separating files that have video format
+	local videoTypes="\.webm$|\.flv$|\.vob$|\.ogg$|\.ogv$|\.drc$|\.gifv$|\.mng$|\.avi$|\.mov$|\.qt$|\.wmv$|\.yuv$|\.rm$|\.rmvb$|/.asf$|\.amv$|\.mp4$|\.m4v$|\.mp*$|\.m?v$|\.svi$|\.3gp$|\.ts$|\.flv$|\.f4v$"
+
+	echo -e "\n"
+	if [[ "$inputDir" == "/" ]]; then
+		sudo find / -type f -iname "*$videoName*" | grep -E "$videoTypes"
+		local searchDir=$(sudo find / -type f -iname "*$videoName*" | grep -E "$videoTypes")
+	else
+		find "$inputDir" -type f -iname "*$videoName*" | grep -E "$videoTypes"
+		local searchDir=$(find "$inputDir" -type f -iname "*$videoName*" | grep -E "$videoTypes")
+	fi
+
+		# Creat file with found videos and change \n to : on it
+		echo $searchDir > /tmp/searchDir
+		sed -i ':a;N;$!ba;s/\n/:/g' /tmp/searchDir
+
+	# Ask for all videos were found
+	for videoPath in $(cat /tmp/searchDir); do
+		echo -e "\n"
+		read -p "${green} Would you like to work with ${orange}'$videoPath'${normal}? [Y/n] "  workWithThis
+
+		if [[ "$workWithThis" == "" || "$workWithThis" == "y" || "$workWithThis" == "Y" ]]; then
+			refer_related_func "$videoPath"
+		elif [[ "$workWithThis" == "n" || "$workWithThis" == "N" ]]; then
+			continue
+		else
+			echo -e "${red}Invalid argument!${normal}"
+			continue
+		fi
+	done
+
+	# Remove searchDir file
+	rm -rf /tmp/searchDir
+}
+
+# ----------\Select movie function\----------
+function select_video_path() {
+	# Ask for video path
+	read -p "${green}Do you want to search video for you ${orange}{search / s}${green} or you know the video location ${orange}{location / l}${normal} : " searchVideoAnswer
+	clear
+
+	echo -e "ُ${red}+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+${normal}"
+
+	if [[ "$searchVideoAnswer" == "search" || "$searchVideoAnswer" == "S" || "$searchVideoAnswer" == "s" ]]; then
+		read -p "Do you like to serach all of your system (Requires root access)? [Y/n] " searchAllSystem
+
+		if [[ "$searchAllSystem" == "" || "$searchAllSystem" == "y" || "$searchAllSystem" == "Y" ]]; then
+			# Search all of file system
+		    echo -e "This operation may take a while!"
+
+			find_video "/"
+		elif [[ "$searchAllSystem" == "n" || "$searchAllSystem" == "N" ]]; then
+			read -p "Do you like search this directory? [Y/n] " workingDirectory
+
+			if [[ "$workingDirectory" == "" || "$workingDirectory" == "y" || "$workingDirectory" == "Y" ]]; then
+				# Search current directory
+
+				find_video "$PWD"
+			elif [[ "$workingDirectory" == "n" || "$workingDirectory" == "N" ]]; then
+				# Search entered path
+				read -p "Enter a directory : " -i "" -e userEnteredPath
+					if [[ "$userEnteredPath" == "/" ]]; then
+						echo -e "${red}You have to chose first option :)${normal}"
+					else
+						find_video "$userEnteredPath"
+					fi
+			else
+				echo -e "${red}Invalid argument!${normal}"
+				exit 1
+			fi
+		else
+		    echo -e "${red}Invalid argument!${normal}"
+			exit 1
+		fi
+	elif [[ "$searchVideoAnswer" == "location" || "$searchVideoAnswer" == "L" || "$searchVideoAnswer" == "l" ]]; then
+		# Read path/to/video
+		read -p "Enter path of the video : " -i "" -e videoPath
+
+		refer_related_func "$videoPath"
+	else
+		echo -e "${red}Invalid argument!${normal}"
+		exit 1
+	fi
+}
+
+# ----------\Reduce video size function\----------
+function reduce_video_size() {
+	clear
+
+	local inputVideo="$1"
+
+	# Check access to video
+	if [[ -r "$inputVideo" ]]; then
+		read -p "Do you want to rename the new video? [Y/n] " renameNewVideo
+
+		if [[ "$renameNewVideo" == "" || "$renameNewVideo" == "Y" || "$renameNewVideo" == "y" ]]; then
+			read -p "Please write the new name : " newVideoName
+
+			ffmpeg -i "$inputVideo" -vcodec h264 -acodec aac -strict -2 "$newVideoName.mp4"
+
+			if [[ "$?" == "0" ]]; then
+				echo -e "\n"
+				echo -e "${green}Your video is ready : ${orange}$newVideoName${normal}"
+			else
+				echo -e "\n"
+				echo -e "${red}Proccess doesn't finish succesfully!${normal}"
+				exit 1
+			fi
+		elif [[ "$renameNewVideo" == "n" || "$renameNewVideo" == "N" ]]; then
+
+			ffmpeg -i "$inputVideo" -vcodec h264 -acodec aac -strict -2 "$(echo "$inputVideo" | tr '.' ' ').mp4"
+
+			# Check operation
+			if [[ "$?" == "0" ]]; then
+				echo -e "\n"
+				echo -e "${green}Your video is ready : ${orange}$(echo "$inputVideo" | tr '.' ' ').mp4${normal}"
+			else
+				echo -e "\n"
+				echo -e "${red}Proccess doesn't finish succesfully!${normal}"
+				exit 1
+			fi
+		else
+			echo -e "${red}Invalid argument!${normal}"
+			exit 1
+		fi
+	else
+		echo -e "\n"
+		echo -e "${red}You haven't access to ${orange}'$inputVideo'${normal}"
+		exit 1
+	fi
+}
+
+# ----------\Change video format function\----------
+function convert_video_format() {
+	clear
+
+	local inputVideo="$1"
+	local videoFormts=("mkv" "mp4" "mp3" "mov" "ogg" "wmv" "webm" "vob" "avi" "flv" "3gp" "ogv" "m4v" "mng" "fv4" "svi" "amv") # Use for using fewer if
+
+	# Check access to video
+	if [[ -r "$inputVideo" ]]; then
+		echo -e "ُ${red}+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+${normal}"
+		read -p "${green}What format do you want to convert ?${normal}
+		1)${orange} mkv${normal}
+		2)${orange} mp4${normal}
+		3)${orange} mp3${normal}
+		4)${orange} mov${normal}
+		5)${orange} ogg${normal}
+		6)${orange} wmv${normal}
+		7)${orange} webm${normal}
+		8)${orange} vob${normal}
+		9)${orange} avi${normal}
+		10)${orange} flv${normal}
+		11)${orange} 3gp${normal}
+		12)${orange} ogv${normal}
+		13)${orange} m4v${normal}
+		14)${orange} mng${normal}
+		15)${orange} fv4${normal}
+		16)${orange} svi${normal}
+		17)${orange} amv${normal}
+
+		Enter the number of the option that you selected : " newVideoFormat
+		echo -e "ُ${red}+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+${normal}"
+
+		if [[ "$newVideoFormat" -gt "-1" && "$newVideoFormat" -lt $((${#videoFormts[@]}+1)) ]]; then
+			echo -e "${green}This operation may take a while because I do not like to put down the quality of your video!${normal}"
+			echo -e "\n"
+			sleep 2
+
+			# Change format
+			ffmpeg -i "$inputVideo" -c:v libx264 "$(echo "$inputVideo" | tr '.' ' ')".${videoFormts[$(("$newVideoFormat"-1))]}
+
+		else
+			echo -e "${red}Your selected number doesn't match with my options!${normal}"
+			exit 1
+		fi
+
+		# Check operation
+		if [[ "$?" == "0" ]]; then
+			echo -e "\n"
+			echo -e "${green}Your video is ready : ${orange}"$(echo "$inputVideo" | tr '.' ' ')".${videoFormts[$(("$newVideoFormat"-1))]} ${normal}"
+		else
+			echo -e "\n"
+			echo -e "${red}Proccess doesn't finish succesfully!${normal}"
+			exit 1
+		fi
+	else
+		echo -e "\n"
+		echo -e "${red}You haven't access to ${orange}'$inputVideo'${normal}"
+		exit 1
+	fi
+}
+
+# ----------\Refer to related function\----------
+function refer_related_func() {
+	local pathToVideo="$1"
+
+	if [[ "$selectedItem" == "1" ]]; then
+		reduce_video_size "$pathToVideo"
+	elif [[ "$selectedItem" == "2" ]]; then
+		convert_video_format "$pathToVideo"
+	fi
+}
+
+# ----------\Main function\----------
+function main() {
+	clear
+
+	echo -e "ُ${red}+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+${normal}"
+	read -p "${green}What can I do for you ???${normal}
+	1)${orange} Reduce video size.${normal}
+	2)${orange} Convert the video format.${normal}
+
+	Enter the number of the option that you selected : " selectedItem
+	echo -e "ُ${red}+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+${normal}"
+	if [[ "$selectedItem" -gt "0" && "$selectedItem" -lt "3" ]]; then
+		select_video_path
+	else
+		echo -e "${red}Invalid argument!${normal}"
+		exit 1
+	fi
+}
+
+# ----------\Uninstall function\----------
+function uninstall() {
+	clear
+
+	read -p "${red}Are you sure to uninstall video-tool??!! [y/N] ${normal}" deletVideoTool
+
+	# Remove dependencies
+	if [[ "$deletVideoTool" == "y" || "$deletVideoTool" == "Y" ]]; then
+		deleteDependencies="0"
+		# Checking if the distro is DebianBase / ArchBase / RedHatBase / SuseBase and running the correct command
+
+		if pacman -Q &> /dev/null; then # Check Arch
+			sudo pacman -Rs ffmpeg
+			# Check user's entered password
+			if [[ !("$?" == "0") ]]; then
+				deleteDependencies="1"
+			fi
+		elif apt list --installed &> /dev/null; then # Check Debian
+			sudo apt remove ffmpeg
+			# Check user's entered password
+			if [[ !("$?" == "0") ]]; then
+				deleteDependencies="1"
+			fi
+		elif dnf list &> /dev/null; then # Check Fedora
+			sudo dnf remove ffmpeg
+			# Check user's entered password
+			if [[ !("$?" == "0") ]]; then
+				deleteDependencies="1"
+			fi
+		elif zypper search i+ &> /dev/null; then # Check openSUSE
+			sudo zypper remove ffmpeg
+			# Check user's entered password
+			if [[ !("$?" == "0") ]]; then
+				deleteDependencies="1"
+			fi
+		else
+			echo -e "${red}Your distro is neither ArchBase or DebianBase or RedHatBase or SuseBase So,
+			 The script is not going to work in your distro and you have uninstall the dependencies manually.${normal}"
+			deleteDependencies="1"
+		fi
+
+		# Removing video-tool Command
+		if [[ "$deleteDependencies" == "0" ]]; then
+			sudo rm -f /usr/bin/video-tool
+			if [[ "$?" == "0" ]]; then
+				echo -e "\n"
+				echo -e "${red}video-tool succesfully uninstalled :( ${normal}"
+			else
+				echo -e "\n"
+				echo -e "${green}video-tool doesn't uninstall succesfully :) ${normal}"
+				exit 1
+			fi
+		else
+			echo -e "\n"
+			echo -e "${green}video-tool doesn't uninstall succesfully :) ${normal}"
+			exit 1
+		fi
+	elif [[ "$deletVideoTool" == "" || "$deletVideoTool" == "n" || "$deletVideoTool" == "N" ]]; then
+		echo -e "\n"
+		echo -e "${green}video-tool is still installed :) ${normal}"
+		return
+	else
+		echo -e "${red}Invalid argument! ${normal}"
+		exit 1
+	fi
+}
+
+# ----------\Update function\----------
+function update() {
+	clear
+
+	# Check place of repo for existing files
+	if [[ -d /tmp/video-tool/ ]]; then
+		sudo rm -rf /tmp/video-tool/
+	fi
+
+	# Check access of /tmp
+	if cd /tmp/ &> /dev/null; then
+		git clone https://github.com/hessamashari/video-tool.git /tmp/video-tool
+		sleep 2
+		echo -e "\n"
+		# Check access of /tmp/video-tool
+		if cd /tmp/video-tool/ &> /dev/null; then
+			# Replace older program with newer
+			sudo cp /tmp/video-tool/video-tool /usr/bin/video-tool
+			sudo chmod 755 /usr/bin/video-tool
+			echo -e "\n"
+			# Check operation
+			if [[ "$?" == "0" ]]; then
+				echo -e " ${green}Video_Tool updated succesfully! ${normal}"
+			else
+				echo -e " ${red}Video_Tool doesn't update succesfully! ${normal}"
+				exit 1
+			fi
+		else
+			echo -e "\n"
+			echo -e "${red}Cannot cd to directory ${orange}'/tmp/video-tool'${normal}"
+			exit 1
+		fi
+	else
+		echo -e "\n"
+		echo -e "${red}Cannot cd to directory ${orange}'/tmp'${normal}"
+		exit 1
+	fi
+
+	# Delet cloned repository
+	sudo rm -rf /tmp/video-tool
+}
+
+# ----------\Show version function\---------
+function show_version() {
+	echo -e "\n"
+	echo -e "Video_Tool, version v0.4 (x86_64-unknown-linux-gnu)
+Copyright (C) 2018 Free Software Foundation, Inc.
+License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>
+
+built with bash 4.4.23 (GNU/bash)
+"
+	return
+}
+
+# ----------\Show help function\----------
+function usage() {
+	echo "\n"
+	echo -e " Usage: video-tool [ -h | --help ],  [ -V | --version ], [ --uninstall ],   [ -U | --update ]"
+	return
+}
+
+# ----------\Input options\----------
+case "$1" in
+    "")    main    ;;
+    "--update" | "-U")    update    ;;
+	"--uninstall")    uninstall    ;;
+	"--help" | "-h")    usage    ;;
+	"--version" | "-V")    show_version    ;;
+	*)    usage    ;;
+esac;
+exit 0
+#!/bin/bash
+
+	# v0.1 --(20180815) add reduce_video_size function
+	# v0.2 --(20180816) add convert_video_format function
+	# v0.3 --(20180816) add show_version and uninstall function
+	# v0.4 --(20180816) add update function and installer script
+
+####################################################
+#                 Video_Tool V0.4                  #
+#  https://github.com/hessamashari/video-tool.git  #
+####################################################
+
+	# author : Hessam Ashari
+	# gitlab : https://gitlab.com/hessam.ashari/video-tool
+	# github : https://github.com/hessamashari/video-tool
+	# Email  : hessam.ashari@gmail.com
+
+normal="$(printf '\033[0m')"          # text mode
+# Colors
+red="$(printf '\033[0;31m')"  		  # red
+green="$(printf '\033[0;32m')"        # green
+orange="$(printf '\033[0;33m')"       # orange
+blue="$(printf '\033[0;34m')"         # blue
+white="$(printf '\033[0;37m')"        # white
+
+# Import functions
+source /usr/share/src/main/select.sh
+
+# ----------\Main function\----------
+function main() {
+	clear
+
+	echo -e "ُ${red}+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+${normal}"
+	read -p "${green}What can I do for you ???${normal}
+	1)${orange} Reduce video size.${normal}
+	2)${orange} Convert the video format.${normal}
+
+	Enter the number of the option that you selected : " selectedItem
+	echo -e "ُ${red}+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+${normal}"
+	if [[ "$selectedItem" -gt "0" && "$selectedItem" -lt "3" ]]; then
+		select_video_path
+	else
+		echo -e "${red}Invalid argument!${normal}"
+		exit 1
+	fi
+}
+
+# ----------\Uninstall function\----------
+function uninstall() {
+	clear
+
+	read -p "${red}Are you sure to uninstall video-tool??!! [y/N] ${normal}" deletVideoTool
+
+	# Remove dependencies
+	if [[ "$deletVideoTool" == "y" || "$deletVideoTool" == "Y" ]]; then
+		deleteDependencies="0"
+		# Checking if the distro is DebianBase / ArchBase / RedHatBase / SuseBase and running the correct command
+
+		if pacman -Q &> /dev/null; then # Check Arch
+			sudo pacman -Rs ffmpeg
+			# Check user's entered password
+			if [[ !("$?" == "0") ]]; then
+				deleteDependencies="1"
+			fi
+		elif apt list --installed &> /dev/null; then # Check Debian
+			sudo apt remove ffmpeg
+			# Check user's entered password
+			if [[ !("$?" == "0") ]]; then
+				deleteDependencies="1"
+			fi
+		elif dnf list &> /dev/null; then # Check Fedora
+			sudo dnf remove ffmpeg
+			# Check user's entered password
+			if [[ !("$?" == "0") ]]; then
+				deleteDependencies="1"
+			fi
+		elif zypper search i+ &> /dev/null; then # Check openSUSE
+			sudo zypper remove ffmpeg
+			# Check user's entered password
+			if [[ !("$?" == "0") ]]; then
+				deleteDependencies="1"
+			fi
+		else
+			echo -e "${red}Your distro is neither ArchBase or DebianBase or RedHatBase or SuseBase So,
+			 The script is not going to work in your distro and you have uninstall the dependencies manually.${normal}"
+			deleteDependencies="1"
+		fi
+
+		# Removing video-tool Command
+		if [[ "$deleteDependencies" == "0" ]]; then
+			sudo rm -f /usr/bin/video-tool
+			if [[ "$?" == "0" ]]; then
+				echo -e "\n"
+				echo -e "${red}video-tool succesfully uninstalled :( ${normal}"
+			else
+				echo -e "\n"
+				echo -e "${green}video-tool doesn't uninstall succesfully :) ${normal}"
+				exit 1
+			fi
+		else
+			echo -e "\n"
+			echo -e "${green}video-tool doesn't uninstall succesfully :) ${normal}"
+			exit 1
+		fi
+	elif [[ "$deletVideoTool" == "" || "$deletVideoTool" == "n" || "$deletVideoTool" == "N" ]]; then
+		echo -e "\n"
+		echo -e "${green}video-tool is still installed :) ${normal}"
+		return
+	else
+		echo -e "${red}Invalid argument! ${normal}"
+		exit 1
+	fi
+}
+
+# ----------\Update function\----------
+function update() {
+	clear
+
+	# Check place of repo for existing files
+	if [[ -d /tmp/video-tool/ ]]; then
+		sudo rm -rf /tmp/video-tool/
+	fi
+
+	# Check access of /tmp
+	if cd /tmp/ &> /dev/null; then
+		git clone https://github.com/hessamashari/video-tool.git /tmp/video-tool
+		sleep 2
+		echo -e "\n"
+		# Check access of /tmp/video-tool
+		if cd /tmp/video-tool/ &> /dev/null; then
+			# Replace older program with newer
+			sudo cp /tmp/video-tool/video-tool /usr/bin/video-tool
+			sudo chmod 755 /usr/bin/video-tool
+			echo -e "\n"
+			# Check operation
+			if [[ "$?" == "0" ]]; then
+				echo -e " ${green}Video_Tool updated succesfully! ${normal}"
+			else
+				echo -e " ${red}Video_Tool doesn't update succesfully! ${normal}"
+				exit 1
+			fi
+		else
+			echo -e "\n"
+			echo -e "${red}Cannot cd to directory ${orange}'/tmp/video-tool'${normal}"
+			exit 1
+		fi
+	else
+		echo -e "\n"
+		echo -e "${red}Cannot cd to directory ${orange}'/tmp'${normal}"
+		exit 1
+	fi
+
+	# Delet cloned repository
+	sudo rm -rf /tmp/video-tool
+}
+
+# ----------\Show version function\---------
+function show_version() {
+	echo -e "\n"
+	echo -e "Video_Tool, version v0.4 (x86_64-unknown-linux-gnu)
+Copyright (C) 2018 Free Software Foundation, Inc.
+License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>
+
+built with bash 4.4.23 (GNU/bash)
+"
+	return
+}
+
+# ----------\Show help function\----------
+function usage() {
+	echo "\n"
+	echo -e " Usage: video-tool [ -h | --help ],  [ -V | --version ], [ --uninstall ],   [ -U | --update ]"
+	return
+}
+
+# ----------\Input options\----------
+case "$1" in
+    "")    main    ;;
+    "--update" | "-U")    update    ;;
+	"--uninstall")    uninstall    ;;
+	"--help" | "-h")    usage    ;;
+	"--version" | "-V")    show_version    ;;
+	*)    usage    ;;
+esac;
+exit 0
+#!/bin/bash
+
+	# v0.1 --(20180815) add reduce_video_size function
+	# v0.2 --(20180816) add convert_video_format function
+	# v0.3 --(20180816) add show_version and uninstall function
+	# v0.4 --(20180816) add update function and installer script
+
+####################################################
+#                 Video_Tool V0.4                  #
+#  https://github.com/hessamashari/video-tool.git  #
+####################################################
+
+	# author : Hessam Ashari
+	# gitlab : https://gitlab.com/hessam.ashari/video-tool
+	# github : https://github.com/hessamashari/video-tool
+	# Email  : hessam.ashari@gmail.com
+
+normal="$(printf '\033[0m')"          # text mode
+# Colors
+red="$(printf '\033[0;31m')"  		  # red
+green="$(printf '\033[0;32m')"        # green
+orange="$(printf '\033[0;33m')"       # orange
+blue="$(printf '\033[0;34m')"         # blue
+white="$(printf '\033[0;37m')"        # white
+
+# ----------\Find video function\----------
+function find_video() {
+	clear
+
+	local inputDir="$1"
+	local IFS=":" # Use for sed
+
+	read -p "Please enter the name of video : " videoName
+
+	# Separating files that have video format
+	local videoTypes="\.webm$|\.flv$|\.vob$|\.ogg$|\.ogv$|\.drc$|\.gifv$|\.mng$|\.avi$|\.mov$|\.qt$|\.wmv$|\.yuv$|\.rm$|\.rmvb$|/.asf$|\.amv$|\.mp4$|\.m4v$|\.mp*$|\.m?v$|\.svi$|\.3gp$|\.ts$|\.flv$|\.f4v$"
+
+	echo -e "\n"
+	if [[ "$inputDir" == "/" ]]; then
+		sudo find / -type f -iname "*$videoName*" | grep -E "$videoTypes"
+		local searchDir=$(sudo find / -type f -iname "*$videoName*" | grep -E "$videoTypes")
+	else
+		find "$inputDir" -type f -iname "*$videoName*" | grep -E "$videoTypes"
+		local searchDir=$(find "$inputDir" -type f -iname "*$videoName*" | grep -E "$videoTypes")
+	fi
+
+		# Creat file with found videos and change \n to : on it
+		echo $searchDir > /tmp/searchDir
+		sed -i ':a;N;$!ba;s/\n/:/g' /tmp/searchDir
+
+	# Ask for all videos were found
+	for videoPath in $(cat /tmp/searchDir); do
+		echo -e "\n"
+		read -p "${green} Would you like to work with ${orange}'$videoPath'${normal}? [Y/n] "  workWithThis
+
+		if [[ "$workWithThis" == "" || "$workWithThis" == "y" || "$workWithThis" == "Y" ]]; then
+			refer_related_func "$videoPath"
+		elif [[ "$workWithThis" == "n" || "$workWithThis" == "N" ]]; then
+			continue
+		else
+			echo -e "${red}Invalid argument!${normal}"
+			continue
+		fi
+	done
+
+	# Remove searchDir file
+	rm -rf /tmp/searchDir
+}
+
+# ----------\Select movie function\----------
+function select_video_path() {
+	# Ask for video path
+	read -p "${green}Do you want to search video for you ${orange}{search / s}${green} or you know the video location ${orange}{location / l}${normal} : " searchVideoAnswer
+	clear
+
+	echo -e "ُ${red}+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+${normal}"
+
+	if [[ "$searchVideoAnswer" == "search" || "$searchVideoAnswer" == "S" || "$searchVideoAnswer" == "s" ]]; then
+		read -p "Do you like to serach all of your system (Requires root access)? [Y/n] " searchAllSystem
+
+		if [[ "$searchAllSystem" == "" || "$searchAllSystem" == "y" || "$searchAllSystem" == "Y" ]]; then
+			# Search all of file system
+		    echo -e "This operation may take a while!"
+
+			find_video "/"
+		elif [[ "$searchAllSystem" == "n" || "$searchAllSystem" == "N" ]]; then
+			read -p "Do you like search this directory? [Y/n] " workingDirectory
+
+			if [[ "$workingDirectory" == "" || "$workingDirectory" == "y" || "$workingDirectory" == "Y" ]]; then
+				# Search current directory
+
+				find_video "$PWD"
+			elif [[ "$workingDirectory" == "n" || "$workingDirectory" == "N" ]]; then
+				# Search entered path
+				read -p "Enter a directory : " -i "" -e userEnteredPath
+					if [[ "$userEnteredPath" == "/" ]]; then
+						echo -e "${red}You have to chose first option :)${normal}"
+					else
+						find_video "$userEnteredPath"
+					fi
+			else
+				echo -e "${red}Invalid argument!${normal}"
+				exit 1
+			fi
+		else
+		    echo -e "${red}Invalid argument!${normal}"
+			exit 1
+		fi
+	elif [[ "$searchVideoAnswer" == "location" || "$searchVideoAnswer" == "L" || "$searchVideoAnswer" == "l" ]]; then
+		# Read path/to/video
+		read -p "Enter path of the video : " -i "" -e videoPath
+
+		refer_related_func "$videoPath"
+	else
+		echo -e "${red}Invalid argument!${normal}"
+		exit 1
+	fi
+}
+
+# ----------\Reduce video size function\----------
+function reduce_video_size() {
+	clear
+
+	local inputVideo="$1"
+
+	# Check access to video
+	if [[ -r "$inputVideo" ]]; then
+		read -p "Do you want to rename the new video? [Y/n] " renameNewVideo
+
+		if [[ "$renameNewVideo" == "" || "$renameNewVideo" == "Y" || "$renameNewVideo" == "y" ]]; then
+			read -p "Please write the new name : " newVideoName
+
+			ffmpeg -i "$inputVideo" -vcodec h264 -acodec aac -strict -2 "$newVideoName.mp4"
+
+			if [[ "$?" == "0" ]]; then
+				echo -e "\n"
+				echo -e "${green}Your video is ready : ${orange}$newVideoName${normal}"
+			else
+				echo -e "\n"
+				echo -e "${red}Proccess doesn't finish succesfully!${normal}"
+				exit 1
+			fi
+		elif [[ "$renameNewVideo" == "n" || "$renameNewVideo" == "N" ]]; then
+
+			ffmpeg -i "$inputVideo" -vcodec h264 -acodec aac -strict -2 "$(echo "$inputVideo" | tr '.' ' ').mp4"
+
+			# Check operation
+			if [[ "$?" == "0" ]]; then
+				echo -e "\n"
+				echo -e "${green}Your video is ready : ${orange}$(echo "$inputVideo" | tr '.' ' ').mp4${normal}"
+			else
+				echo -e "\n"
+				echo -e "${red}Proccess doesn't finish succesfully!${normal}"
+				exit 1
+			fi
+		else
+			echo -e "${red}Invalid argument!${normal}"
+			exit 1
+		fi
+	else
+		echo -e "\n"
+		echo -e "${red}You haven't access to ${orange}'$inputVideo'${normal}"
+		exit 1
+	fi
+}
+
+# ----------\Change video format function\----------
+function convert_video_format() {
+	clear
+
+	local inputVideo="$1"
+	local videoFormts=("mkv" "mp4" "mp3" "mov" "ogg" "wmv" "webm" "vob" "avi" "flv" "3gp" "ogv" "m4v" "mng" "fv4" "svi" "amv") # Use for using fewer if
+
+	# Check access to video
+	if [[ -r "$inputVideo" ]]; then
+		echo -e "ُ${red}+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+${normal}"
+		read -p "${green}What format do you want to convert ?${normal}
+		1)${orange} mkv${normal}
+		2)${orange} mp4${normal}
+		3)${orange} mp3${normal}
+		4)${orange} mov${normal}
+		5)${orange} ogg${normal}
+		6)${orange} wmv${normal}
+		7)${orange} webm${normal}
+		8)${orange} vob${normal}
+		9)${orange} avi${normal}
+		10)${orange} flv${normal}
+		11)${orange} 3gp${normal}
+		12)${orange} ogv${normal}
+		13)${orange} m4v${normal}
+		14)${orange} mng${normal}
+		15)${orange} fv4${normal}
+		16)${orange} svi${normal}
+		17)${orange} amv${normal}
+
+		Enter the number of the option that you selected : " newVideoFormat
+		echo -e "ُ${red}+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+${normal}"
+
+		if [[ "$newVideoFormat" -gt "-1" && "$newVideoFormat" -lt $((${#videoFormts[@]}+1)) ]]; then
+			echo -e "${green}This operation may take a while because I do not like to put down the quality of your video!${normal}"
+			echo -e "\n"
+			sleep 2
+
+			# Change format
+			ffmpeg -i "$inputVideo" -c:v libx264 "$(echo "$inputVideo" | tr '.' ' ')".${videoFormts[$(("$newVideoFormat"-1))]}
+
+		else
+			echo -e "${red}Your selected number doesn't match with my options!${normal}"
+			exit 1
+		fi
+
+		# Check operation
+		if [[ "$?" == "0" ]]; then
+			echo -e "\n"
+			echo -e "${green}Your video is ready : ${orange}"$(echo "$inputVideo" | tr '.' ' ')".${videoFormts[$(("$newVideoFormat"-1))]} ${normal}"
+		else
+			echo -e "\n"
+			echo -e "${red}Proccess doesn't finish succesfully!${normal}"
+			exit 1
+		fi
+	else
+		echo -e "\n"
+		echo -e "${red}You haven't access to ${orange}'$inputVideo'${normal}"
+		exit 1
+	fi
+}
+
+# ----------\Refer to related function\----------
+function refer_related_func() {
+	local pathToVideo="$1"
+
+	if [[ "$selectedItem" == "1" ]]; then
+		reduce_video_size "$pathToVideo"
+	elif [[ "$selectedItem" == "2" ]]; then
+		convert_video_format "$pathToVideo"
+	fi
+}
+
+# ----------\Main function\----------
+function main() {
+	clear
+
+	echo -e "ُ${red}+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+${normal}"
+	read -p "${green}What can I do for you ???${normal}
+	1)${orange} Reduce video size.${normal}
+	2)${orange} Convert the video format.${normal}
+
+	Enter the number of the option that you selected : " selectedItem
+	echo -e "ُ${red}+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+${normal}"
+	if [[ "$selectedItem" -gt "0" && "$selectedItem" -lt "3" ]]; then
+		select_video_path
+	else
+		echo -e "${red}Invalid argument!${normal}"
+		exit 1
+	fi
+}
+
+# ----------\Uninstall function\----------
+function uninstall() {
+	clear
+
+	read -p "${red}Are you sure to uninstall video-tool??!! [y/N] ${normal}" deletVideoTool
+
+	# Remove dependencies
+	if [[ "$deletVideoTool" == "y" || "$deletVideoTool" == "Y" ]]; then
+		deleteDependencies="0"
+		# Checking if the distro is DebianBase / ArchBase / RedHatBase / SuseBase and running the correct command
+
+		if pacman -Q &> /dev/null; then # Check Arch
+			sudo pacman -Rs ffmpeg
+			# Check user's entered password
+			if [[ !("$?" == "0") ]]; then
+				deleteDependencies="1"
+			fi
+		elif apt list --installed &> /dev/null; then # Check Debian
+			sudo apt remove ffmpeg
+			# Check user's entered password
+			if [[ !("$?" == "0") ]]; then
+				deleteDependencies="1"
+			fi
+		elif dnf list &> /dev/null; then # Check Fedora
+			sudo dnf remove ffmpeg
+			# Check user's entered password
+			if [[ !("$?" == "0") ]]; then
+				deleteDependencies="1"
+			fi
+		elif zypper search i+ &> /dev/null; then # Check openSUSE
+			sudo zypper remove ffmpeg
+			# Check user's entered password
+			if [[ !("$?" == "0") ]]; then
+				deleteDependencies="1"
+			fi
+		else
+			echo -e "${red}Your distro is neither ArchBase or DebianBase or RedHatBase or SuseBase So,
+			 The script is not going to work in your distro and you have uninstall the dependencies manually.${normal}"
+			deleteDependencies="1"
+		fi
+
+		# Removing video-tool Command
+		if [[ "$deleteDependencies" == "0" ]]; then
+			sudo rm -f /usr/bin/video-tool
+			if [[ "$?" == "0" ]]; then
+				echo -e "\n"
+				echo -e "${red}video-tool succesfully uninstalled :( ${normal}"
+			else
+				echo -e "\n"
+				echo -e "${green}video-tool doesn't uninstall succesfully :) ${normal}"
+				exit 1
+			fi
+		else
+			echo -e "\n"
+			echo -e "${green}video-tool doesn't uninstall succesfully :) ${normal}"
+			exit 1
+		fi
+	elif [[ "$deletVideoTool" == "" || "$deletVideoTool" == "n" || "$deletVideoTool" == "N" ]]; then
+		echo -e "\n"
+		echo -e "${green}video-tool is still installed :) ${normal}"
+		return
+	else
+		echo -e "${red}Invalid argument! ${normal}"
+		exit 1
+	fi
+}
+
+# ----------\Update function\----------
+function update() {
+	clear
+
+	# Check place of repo for existing files
+	if [[ -d /tmp/video-tool/ ]]; then
+		sudo rm -rf /tmp/video-tool/
+	fi
+
+	# Check access of /tmp
+	if cd /tmp/ &> /dev/null; then
+		git clone https://github.com/hessamashari/video-tool.git /tmp/video-tool
+		sleep 2
+		echo -e "\n"
+		# Check access of /tmp/video-tool
+		if cd /tmp/video-tool/ &> /dev/null; then
+			# Replace older program with newer
+			sudo cp /tmp/video-tool/video-tool /usr/bin/video-tool
+			sudo chmod 755 /usr/bin/video-tool
+			echo -e "\n"
+			# Check operation
+			if [[ "$?" == "0" ]]; then
+				echo -e " ${green}Video_Tool updated succesfully! ${normal}"
+			else
+				echo -e " ${red}Video_Tool doesn't update succesfully! ${normal}"
+				exit 1
+			fi
+		else
+			echo -e "\n"
+			echo -e "${red}Cannot cd to directory ${orange}'/tmp/video-tool'${normal}"
+			exit 1
+		fi
+	else
+		echo -e "\n"
+		echo -e "${red}Cannot cd to directory ${orange}'/tmp'${normal}"
+		exit 1
+	fi
+
+	# Delet cloned repository
+	sudo rm -rf /tmp/video-tool
+}
+
+# ----------\Show version function\---------
+function show_version() {
+	echo -e "\n"
+	echo -e "Video_Tool, version v0.4 (x86_64-unknown-linux-gnu)
+Copyright (C) 2018 Free Software Foundation, Inc.
+License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>
+
+built with bash 4.4.23 (GNU/bash)
+"
+	return
+}
+
+# ----------\Show help function\----------
+function usage() {
+	echo "\n"
+	echo -e " Usage: video-tool [ -h | --help ],  [ -V | --version ], [ --uninstall ],   [ -U | --update ]"
+	return
+}
+
+# ----------\Input options\----------
+case "$1" in
+    "")    main    ;;
+    "--update" | "-U")    update    ;;
+	"--uninstall")    uninstall    ;;
+	"--help" | "-h")    usage    ;;
+	"--version" | "-V")    show_version    ;;
+	*)    usage    ;;
+esac;
+exit 0
+#!/bin/bash
+
+	# v0.1 --(20180815) add reduce_video_size function
+	# v0.2 --(20180816) add convert_video_format function
+	# v0.3 --(20180816) add show_version and uninstall function
+	# v0.4 --(20180816) add update function and installer script
+
+####################################################
+#                 Video_Tool V0.4                  #
+#  https://github.com/hessamashari/video-tool.git  #
+####################################################
+
+	# author : Hessam Ashari
+	# gitlab : https://gitlab.com/hessam.ashari/video-tool
+	# github : https://github.com/hessamashari/video-tool
+	# Email  : hessam.ashari@gmail.com
+
+normal="$(printf '\033[0m')"          # text mode
+# Colors
+red="$(printf '\033[0;31m')"  		  # red
+green="$(printf '\033[0;32m')"        # green
+orange="$(printf '\033[0;33m')"       # orange
+blue="$(printf '\033[0;34m')"         # blue
+white="$(printf '\033[0;37m')"        # white
+
+# Import functions
+source /usr/share/src/main/select.sh
+
+# ----------\Main function\----------
+function main() {
+	clear
+
+	echo -e "ُ${red}+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+${normal}"
+	read -p "${green}What can I do for you ???${normal}
+	1)${orange} Reduce video size.${normal}
+	2)${orange} Convert the video format.${normal}
+
+	Enter the number of the option that you selected : " selectedItem
+	echo -e "ُ${red}+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+${normal}"
+	if [[ "$selectedItem" -gt "0" && "$selectedItem" -lt "3" ]]; then
+		select_video_path
+	else
+		echo -e "${red}Invalid argument!${normal}"
+		exit 1
+	fi
+}
+
+# ----------\Uninstall function\----------
+function uninstall() {
+	clear
+
+	read -p "${red}Are you sure to uninstall video-tool??!! [y/N] ${normal}" deletVideoTool
+
+	# Remove dependencies
+	if [[ "$deletVideoTool" == "y" || "$deletVideoTool" == "Y" ]]; then
+		deleteDependencies="0"
+		# Checking if the distro is DebianBase / ArchBase / RedHatBase / SuseBase and running the correct command
+
+		if pacman -Q &> /dev/null; then # Check Arch
+			sudo pacman -Rs ffmpeg
+			# Check user's entered password
+			if [[ !("$?" == "0") ]]; then
+				deleteDependencies="1"
+			fi
+		elif apt list --installed &> /dev/null; then # Check Debian
+			sudo apt remove ffmpeg
+			# Check user's entered password
+			if [[ !("$?" == "0") ]]; then
+				deleteDependencies="1"
+			fi
+		elif dnf list &> /dev/null; then # Check Fedora
+			sudo dnf remove ffmpeg
+			# Check user's entered password
+			if [[ !("$?" == "0") ]]; then
+				deleteDependencies="1"
+			fi
+		elif zypper search i+ &> /dev/null; then # Check openSUSE
+			sudo zypper remove ffmpeg
+			# Check user's entered password
+			if [[ !("$?" == "0") ]]; then
+				deleteDependencies="1"
+			fi
+		else
+			echo -e "${red}Your distro is neither ArchBase or DebianBase or RedHatBase or SuseBase So,
+			 The script is not going to work in your distro and you have uninstall the dependencies manually.${normal}"
+			deleteDependencies="1"
+		fi
+
+		# Removing video-tool Command
+		if [[ "$deleteDependencies" == "0" ]]; then
+			sudo rm -f /usr/bin/video-tool
+			if [[ "$?" == "0" ]]; then
+				echo -e "\n"
+				echo -e "${red}video-tool succesfully uninstalled :( ${normal}"
+			else
+				echo -e "\n"
+				echo -e "${green}video-tool doesn't uninstall succesfully :) ${normal}"
+				exit 1
+			fi
+		else
+			echo -e "\n"
+			echo -e "${green}video-tool doesn't uninstall succesfully :) ${normal}"
+			exit 1
+		fi
+	elif [[ "$deletVideoTool" == "" || "$deletVideoTool" == "n" || "$deletVideoTool" == "N" ]]; then
+		echo -e "\n"
+		echo -e "${green}video-tool is still installed :) ${normal}"
+		return
+	else
+		echo -e "${red}Invalid argument! ${normal}"
+		exit 1
+	fi
+}
+
+# ----------\Update function\----------
+function update() {
+	clear
+
+	# Check place of repo for existing files
+	if [[ -d /tmp/video-tool/ ]]; then
+		sudo rm -rf /tmp/video-tool/
+	fi
+
+	# Check access of /tmp
+	if cd /tmp/ &> /dev/null; then
+		git clone https://github.com/hessamashari/video-tool.git /tmp/video-tool
+		sleep 2
+		echo -e "\n"
+		# Check access of /tmp/video-tool
+		if cd /tmp/video-tool/ &> /dev/null; then
+			# Replace older program with newer
+			sudo cp /tmp/video-tool/video-tool /usr/bin/video-tool
+			sudo chmod 755 /usr/bin/video-tool
+			echo -e "\n"
+			# Check operation
+			if [[ "$?" == "0" ]]; then
+				echo -e " ${green}Video_Tool updated succesfully! ${normal}"
+			else
+				echo -e " ${red}Video_Tool doesn't update succesfully! ${normal}"
+				exit 1
+			fi
+		else
+			echo -e "\n"
+			echo -e "${red}Cannot cd to directory ${orange}'/tmp/video-tool'${normal}"
+			exit 1
+		fi
+	else
+		echo -e "\n"
+		echo -e "${red}Cannot cd to directory ${orange}'/tmp'${normal}"
+		exit 1
+	fi
+
+	# Delet cloned repository
+	sudo rm -rf /tmp/video-tool
+}
+
+# ----------\Show version function\---------
+function show_version() {
+	echo -e "\n"
+	echo -e "Video_Tool, version v0.4 (x86_64-unknown-linux-gnu)
+Copyright (C) 2018 Free Software Foundation, Inc.
+License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>
+
+built with bash 4.4.23 (GNU/bash)
+"
+	return
+}
+
+# ----------\Show help function\----------
+function usage() {
+	echo "\n"
+	echo -e " Usage: video-tool [ -h | --help ],  [ -V | --version ], [ --uninstall ],   [ -U | --update ]"
+	return
+}
+
+# ----------\Input options\----------
+case "$1" in
+    "")    main    ;;
+    "--update" | "-U")    update    ;;
+	"--uninstall")    uninstall    ;;
+	"--help" | "-h")    usage    ;;
+	"--version" | "-V")    show_version    ;;
+	*)    usage    ;;
+esac;
+exit 0
+#!/bin/bash
+
+	# v0.1 --(20180815) add reduce_video_size function
+	# v0.2 --(20180816) add convert_video_format function
+	# v0.3 --(20180816) add show_version and uninstall function
+	# v0.4 --(20180816) add update function and installer script
+
+####################################################
+#                 Video_Tool V0.4                  #
+#  https://github.com/hessamashari/video-tool.git  #
+####################################################
+
+	# author : Hessam Ashari
+	# gitlab : https://gitlab.com/hessam.ashari/video-tool
+	# github : https://github.com/hessamashari/video-tool
+	# Email  : hessam.ashari@gmail.com
+
+normal="$(printf '\033[0m')"          # text mode
+# Colors
+red="$(printf '\033[0;31m')"  		  # red
+green="$(printf '\033[0;32m')"        # green
+orange="$(printf '\033[0;33m')"       # orange
+blue="$(printf '\033[0;34m')"         # blue
+white="$(printf '\033[0;37m')"        # white
+
+# ----------\Find video function\----------
+function find_video() {
+	clear
+
+	local inputDir="$1"
+	local IFS=":" # Use for sed
+
+	read -p "Please enter the name of video : " videoName
+
+	# Separating files that have video format
+	local videoTypes="\.webm$|\.flv$|\.vob$|\.ogg$|\.ogv$|\.drc$|\.gifv$|\.mng$|\.avi$|\.mov$|\.qt$|\.wmv$|\.yuv$|\.rm$|\.rmvb$|/.asf$|\.amv$|\.mp4$|\.m4v$|\.mp*$|\.m?v$|\.svi$|\.3gp$|\.ts$|\.flv$|\.f4v$"
+
+	echo -e "\n"
+	if [[ "$inputDir" == "/" ]]; then
+		sudo find / -type f -iname "*$videoName*" | grep -E "$videoTypes"
+		local searchDir=$(sudo find / -type f -iname "*$videoName*" | grep -E "$videoTypes")
+	else
+		find "$inputDir" -type f -iname "*$videoName*" | grep -E "$videoTypes"
+		local searchDir=$(find "$inputDir" -type f -iname "*$videoName*" | grep -E "$videoTypes")
+	fi
+
+		# Creat file with found videos and change \n to : on it
+		echo $searchDir > /tmp/searchDir
+		sed -i ':a;N;$!ba;s/\n/:/g' /tmp/searchDir
+
+	# Ask for all videos were found
+	for videoPath in $(cat /tmp/searchDir); do
+		echo -e "\n"
+		read -p "${green} Would you like to work with ${orange}'$videoPath'${normal}? [Y/n] "  workWithThis
+
+		if [[ "$workWithThis" == "" || "$workWithThis" == "y" || "$workWithThis" == "Y" ]]; then
+			refer_related_func "$videoPath"
+		elif [[ "$workWithThis" == "n" || "$workWithThis" == "N" ]]; then
+			continue
+		else
+			echo -e "${red}Invalid argument!${normal}"
+			continue
+		fi
+	done
+
+	# Remove searchDir file
+	rm -rf /tmp/searchDir
+}
+
+# ----------\Select movie function\----------
+function select_video_path() {
+	# Ask for video path
+	read -p "${green}Do you want to search video for you ${orange}{search / s}${green} or you know the video location ${orange}{location / l}${normal} : " searchVideoAnswer
+	clear
+
+	echo -e "ُ${red}+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+${normal}"
+
+	if [[ "$searchVideoAnswer" == "search" || "$searchVideoAnswer" == "S" || "$searchVideoAnswer" == "s" ]]; then
+		read -p "Do you like to serach all of your system (Requires root access)? [Y/n] " searchAllSystem
+
+		if [[ "$searchAllSystem" == "" || "$searchAllSystem" == "y" || "$searchAllSystem" == "Y" ]]; then
+			# Search all of file system
+		    echo -e "This operation may take a while!"
+
+			find_video "/"
+		elif [[ "$searchAllSystem" == "n" || "$searchAllSystem" == "N" ]]; then
+			read -p "Do you like search this directory? [Y/n] " workingDirectory
+
+			if [[ "$workingDirectory" == "" || "$workingDirectory" == "y" || "$workingDirectory" == "Y" ]]; then
+				# Search current directory
+
+				find_video "$PWD"
+			elif [[ "$workingDirectory" == "n" || "$workingDirectory" == "N" ]]; then
+				# Search entered path
+				read -p "Enter a directory : " -i "" -e userEnteredPath
+					if [[ "$userEnteredPath" == "/" ]]; then
+						echo -e "${red}You have to chose first option :)${normal}"
+					else
+						find_video "$userEnteredPath"
+					fi
+			else
+				echo -e "${red}Invalid argument!${normal}"
+				exit 1
+			fi
+		else
+		    echo -e "${red}Invalid argument!${normal}"
+			exit 1
+		fi
+	elif [[ "$searchVideoAnswer" == "location" || "$searchVideoAnswer" == "L" || "$searchVideoAnswer" == "l" ]]; then
+		# Read path/to/video
+		read -p "Enter path of the video : " -i "" -e videoPath
+
+		refer_related_func "$videoPath"
+	else
+		echo -e "${red}Invalid argument!${normal}"
+		exit 1
+	fi
+}
+
+# ----------\Reduce video size function\----------
+function reduce_video_size() {
+	clear
+
+	local inputVideo="$1"
+
+	# Check access to video
+	if [[ -r "$inputVideo" ]]; then
+		read -p "Do you want to rename the new video? [Y/n] " renameNewVideo
+
+		if [[ "$renameNewVideo" == "" || "$renameNewVideo" == "Y" || "$renameNewVideo" == "y" ]]; then
+			read -p "Please write the new name : " newVideoName
+
+			ffmpeg -i "$inputVideo" -vcodec h264 -acodec aac -strict -2 "$newVideoName.mp4"
+
+			if [[ "$?" == "0" ]]; then
+				echo -e "\n"
+				echo -e "${green}Your video is ready : ${orange}$newVideoName${normal}"
+			else
+				echo -e "\n"
+				echo -e "${red}Proccess doesn't finish succesfully!${normal}"
+				exit 1
+			fi
+		elif [[ "$renameNewVideo" == "n" || "$renameNewVideo" == "N" ]]; then
+
+			ffmpeg -i "$inputVideo" -vcodec h264 -acodec aac -strict -2 "$(echo "$inputVideo" | tr '.' ' ').mp4"
+
+			# Check operation
+			if [[ "$?" == "0" ]]; then
+				echo -e "\n"
+				echo -e "${green}Your video is ready : ${orange}$(echo "$inputVideo" | tr '.' ' ').mp4${normal}"
+			else
+				echo -e "\n"
+				echo -e "${red}Proccess doesn't finish succesfully!${normal}"
+				exit 1
+			fi
+		else
+			echo -e "${red}Invalid argument!${normal}"
+			exit 1
+		fi
+	else
+		echo -e "\n"
+		echo -e "${red}You haven't access to ${orange}'$inputVideo'${normal}"
+		exit 1
+	fi
+}
+
+# ----------\Change video format function\----------
+function convert_video_format() {
+	clear
+
+	local inputVideo="$1"
+	local videoFormts=("mkv" "mp4" "mp3" "mov" "ogg" "wmv" "webm" "vob" "avi" "flv" "3gp" "ogv" "m4v" "mng" "fv4" "svi" "amv") # Use for using fewer if
+
+	# Check access to video
+	if [[ -r "$inputVideo" ]]; then
+		echo -e "ُ${red}+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+${normal}"
+		read -p "${green}What format do you want to convert ?${normal}
+		1)${orange} mkv${normal}
+		2)${orange} mp4${normal}
+		3)${orange} mp3${normal}
+		4)${orange} mov${normal}
+		5)${orange} ogg${normal}
+		6)${orange} wmv${normal}
+		7)${orange} webm${normal}
+		8)${orange} vob${normal}
+		9)${orange} avi${normal}
+		10)${orange} flv${normal}
+		11)${orange} 3gp${normal}
+		12)${orange} ogv${normal}
+		13)${orange} m4v${normal}
+		14)${orange} mng${normal}
+		15)${orange} fv4${normal}
+		16)${orange} svi${normal}
+		17)${orange} amv${normal}
+
+		Enter the number of the option that you selected : " newVideoFormat
+		echo -e "ُ${red}+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+${normal}"
+
+		if [[ "$newVideoFormat" -gt "-1" && "$newVideoFormat" -lt $((${#videoFormts[@]}+1)) ]]; then
+			echo -e "${green}This operation may take a while because I do not like to put down the quality of your video!${normal}"
+			echo -e "\n"
+			sleep 2
+
+			# Change format
+			ffmpeg -i "$inputVideo" -c:v libx264 "$(echo "$inputVideo" | tr '.' ' ')".${videoFormts[$(("$newVideoFormat"-1))]}
+
+		else
+			echo -e "${red}Your selected number doesn't match with my options!${normal}"
+			exit 1
+		fi
+
+		# Check operation
+		if [[ "$?" == "0" ]]; then
+			echo -e "\n"
+			echo -e "${green}Your video is ready : ${orange}"$(echo "$inputVideo" | tr '.' ' ')".${videoFormts[$(("$newVideoFormat"-1))]} ${normal}"
+		else
+			echo -e "\n"
+			echo -e "${red}Proccess doesn't finish succesfully!${normal}"
+			exit 1
+		fi
+	else
+		echo -e "\n"
+		echo -e "${red}You haven't access to ${orange}'$inputVideo'${normal}"
+		exit 1
+	fi
+}
+
+# ----------\Refer to related function\----------
+function refer_related_func() {
+	local pathToVideo="$1"
+
+	if [[ "$selectedItem" == "1" ]]; then
+		reduce_video_size "$pathToVideo"
+	elif [[ "$selectedItem" == "2" ]]; then
+		convert_video_format "$pathToVideo"
+	fi
+}
+
+# ----------\Main function\----------
+function main() {
+	clear
+
+	echo -e "ُ${red}+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+${normal}"
+	read -p "${green}What can I do for you ???${normal}
+	1)${orange} Reduce video size.${normal}
+	2)${orange} Convert the video format.${normal}
+
+	Enter the number of the option that you selected : " selectedItem
+	echo -e "ُ${red}+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+${normal}"
+	if [[ "$selectedItem" -gt "0" && "$selectedItem" -lt "3" ]]; then
+		select_video_path
+	else
+		echo -e "${red}Invalid argument!${normal}"
+		exit 1
+	fi
+}
+
+# ----------\Uninstall function\----------
+function uninstall() {
+	clear
+
+	read -p "${red}Are you sure to uninstall video-tool??!! [y/N] ${normal}" deletVideoTool
+
+	# Remove dependencies
+	if [[ "$deletVideoTool" == "y" || "$deletVideoTool" == "Y" ]]; then
+		deleteDependencies="0"
+		# Checking if the distro is DebianBase / ArchBase / RedHatBase / SuseBase and running the correct command
+
+		if pacman -Q &> /dev/null; then # Check Arch
+			sudo pacman -Rs ffmpeg
+			# Check user's entered password
+			if [[ !("$?" == "0") ]]; then
+				deleteDependencies="1"
+			fi
+		elif apt list --installed &> /dev/null; then # Check Debian
+			sudo apt remove ffmpeg
+			# Check user's entered password
+			if [[ !("$?" == "0") ]]; then
+				deleteDependencies="1"
+			fi
+		elif dnf list &> /dev/null; then # Check Fedora
+			sudo dnf remove ffmpeg
+			# Check user's entered password
+			if [[ !("$?" == "0") ]]; then
+				deleteDependencies="1"
+			fi
+		elif zypper search i+ &> /dev/null; then # Check openSUSE
+			sudo zypper remove ffmpeg
+			# Check user's entered password
+			if [[ !("$?" == "0") ]]; then
+				deleteDependencies="1"
+			fi
+		else
+			echo -e "${red}Your distro is neither ArchBase or DebianBase or RedHatBase or SuseBase So,
+			 The script is not going to work in your distro and you have uninstall the dependencies manually.${normal}"
+			deleteDependencies="1"
+		fi
+
+		# Removing video-tool Command
+		if [[ "$deleteDependencies" == "0" ]]; then
+			sudo rm -f /usr/bin/video-tool
+			if [[ "$?" == "0" ]]; then
+				echo -e "\n"
+				echo -e "${red}video-tool succesfully uninstalled :( ${normal}"
+			else
+				echo -e "\n"
+				echo -e "${green}video-tool doesn't uninstall succesfully :) ${normal}"
+				exit 1
+			fi
+		else
+			echo -e "\n"
+			echo -e "${green}video-tool doesn't uninstall succesfully :) ${normal}"
+			exit 1
+		fi
+	elif [[ "$deletVideoTool" == "" || "$deletVideoTool" == "n" || "$deletVideoTool" == "N" ]]; then
+		echo -e "\n"
+		echo -e "${green}video-tool is still installed :) ${normal}"
+		return
+	else
+		echo -e "${red}Invalid argument! ${normal}"
+		exit 1
+	fi
+}
+
+# ----------\Update function\----------
+function update() {
+	clear
+
+	# Check place of repo for existing files
+	if [[ -d /tmp/video-tool/ ]]; then
+		sudo rm -rf /tmp/video-tool/
+	fi
+
+	# Check access of /tmp
+	if cd /tmp/ &> /dev/null; then
+		git clone https://github.com/hessamashari/video-tool.git /tmp/video-tool
+		sleep 2
+		echo -e "\n"
+		# Check access of /tmp/video-tool
+		if cd /tmp/video-tool/ &> /dev/null; then
+			# Replace older program with newer
+			sudo cp /tmp/video-tool/video-tool /usr/bin/video-tool
+			sudo chmod 755 /usr/bin/video-tool
+			echo -e "\n"
+			# Check operation
+			if [[ "$?" == "0" ]]; then
+				echo -e " ${green}Video_Tool updated succesfully! ${normal}"
+			else
+				echo -e " ${red}Video_Tool doesn't update succesfully! ${normal}"
+				exit 1
+			fi
+		else
+			echo -e "\n"
+			echo -e "${red}Cannot cd to directory ${orange}'/tmp/video-tool'${normal}"
+			exit 1
+		fi
+	else
+		echo -e "\n"
+		echo -e "${red}Cannot cd to directory ${orange}'/tmp'${normal}"
+		exit 1
+	fi
+
+	# Delet cloned repository
+	sudo rm -rf /tmp/video-tool
+}
+
+# ----------\Show version function\---------
+function show_version() {
+	echo -e "\n"
+	echo -e "Video_Tool, version v0.4 (x86_64-unknown-linux-gnu)
+Copyright (C) 2018 Free Software Foundation, Inc.
+License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>
+
+built with bash 4.4.23 (GNU/bash)
+"
+	return
+}
+
+# ----------\Show help function\----------
+function usage() {
+	echo "\n"
+	echo -e " Usage: video-tool [ -h | --help ],  [ -V | --version ], [ --uninstall ],   [ -U | --update ]"
+	return
+}
+
+# ----------\Input options\----------
+case "$1" in
+    "")    main    ;;
+    "--update" | "-U")    update    ;;
+	"--uninstall")    uninstall    ;;
+	"--help" | "-h")    usage    ;;
+	"--version" | "-V")    show_version    ;;
+	*)    usage    ;;
+esac;
+exit 0
+#!/bin/bash
+
+	# v0.1 --(20180815) add reduce_video_size function
+	# v0.2 --(20180816) add convert_video_format function
+	# v0.3 --(20180816) add show_version and uninstall function
+	# v0.4 --(20180816) add update function and installer script
+
+####################################################
+#                 Video_Tool V0.4                  #
+#  https://github.com/hessamashari/video-tool.git  #
+####################################################
+
+	# author : Hessam Ashari
+	# gitlab : https://gitlab.com/hessam.ashari/video-tool
+	# github : https://github.com/hessamashari/video-tool
+	# Email  : hessam.ashari@gmail.com
+
+normal="$(printf '\033[0m')"          # text mode
+# Colors
+red="$(printf '\033[0;31m')"  		  # red
+green="$(printf '\033[0;32m')"        # green
+orange="$(printf '\033[0;33m')"       # orange
+blue="$(printf '\033[0;34m')"         # blue
+white="$(printf '\033[0;37m')"        # white
+
+# Import functions
+source /usr/share/src/main/select.sh
+
+# ----------\Main function\----------
+function main() {
+	clear
+
+	echo -e "ُ${red}+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+${normal}"
+	read -p "${green}What can I do for you ???${normal}
+	1)${orange} Reduce video size.${normal}
+	2)${orange} Convert the video format.${normal}
+
+	Enter the number of the option that you selected : " selectedItem
+	echo -e "ُ${red}+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+${normal}"
+	if [[ "$selectedItem" -gt "0" && "$selectedItem" -lt "3" ]]; then
+		select_video_path
+	else
+		echo -e "${red}Invalid argument!${normal}"
+		exit 1
+	fi
+}
+
+# ----------\Uninstall function\----------
+function uninstall() {
+	clear
+
+	read -p "${red}Are you sure to uninstall video-tool??!! [y/N] ${normal}" deletVideoTool
+
+	# Remove dependencies
+	if [[ "$deletVideoTool" == "y" || "$deletVideoTool" == "Y" ]]; then
+		deleteDependencies="0"
+		# Checking if the distro is DebianBase / ArchBase / RedHatBase / SuseBase and running the correct command
+
+		if pacman -Q &> /dev/null; then # Check Arch
+			sudo pacman -Rs ffmpeg
+			# Check user's entered password
+			if [[ !("$?" == "0") ]]; then
+				deleteDependencies="1"
+			fi
+		elif apt list --installed &> /dev/null; then # Check Debian
+			sudo apt remove ffmpeg
+			# Check user's entered password
+			if [[ !("$?" == "0") ]]; then
+				deleteDependencies="1"
+			fi
+		elif dnf list &> /dev/null; then # Check Fedora
+			sudo dnf remove ffmpeg
+			# Check user's entered password
+			if [[ !("$?" == "0") ]]; then
+				deleteDependencies="1"
+			fi
+		elif zypper search i+ &> /dev/null; then # Check openSUSE
+			sudo zypper remove ffmpeg
+			# Check user's entered password
+			if [[ !("$?" == "0") ]]; then
+				deleteDependencies="1"
+			fi
+		else
+			echo -e "${red}Your distro is neither ArchBase or DebianBase or RedHatBase or SuseBase So,
+			 The script is not going to work in your distro and you have uninstall the dependencies manually.${normal}"
+			deleteDependencies="1"
+		fi
+
+		# Removing video-tool Command
+		if [[ "$deleteDependencies" == "0" ]]; then
+			sudo rm -f /usr/bin/video-tool
+			if [[ "$?" == "0" ]]; then
+				echo -e "\n"
+				echo -e "${red}video-tool succesfully uninstalled :( ${normal}"
+			else
+				echo -e "\n"
+				echo -e "${green}video-tool doesn't uninstall succesfully :) ${normal}"
+				exit 1
+			fi
+		else
+			echo -e "\n"
+			echo -e "${green}video-tool doesn't uninstall succesfully :) ${normal}"
+			exit 1
+		fi
+	elif [[ "$deletVideoTool" == "" || "$deletVideoTool" == "n" || "$deletVideoTool" == "N" ]]; then
+		echo -e "\n"
+		echo -e "${green}video-tool is still installed :) ${normal}"
+		return
+	else
+		echo -e "${red}Invalid argument! ${normal}"
+		exit 1
+	fi
+}
+
+# ----------\Update function\----------
+function update() {
+	clear
+
+	# Check place of repo for existing files
+	if [[ -d /tmp/video-tool/ ]]; then
+		sudo rm -rf /tmp/video-tool/
+	fi
+
+	# Check access of /tmp
+	if cd /tmp/ &> /dev/null; then
+		git clone https://github.com/hessamashari/video-tool.git /tmp/video-tool
+		sleep 2
+		echo -e "\n"
+		# Check access of /tmp/video-tool
+		if cd /tmp/video-tool/ &> /dev/null; then
+			# Replace older program with newer
+			sudo cp /tmp/video-tool/video-tool /usr/bin/video-tool
+			sudo chmod 755 /usr/bin/video-tool
+			echo -e "\n"
+			# Check operation
+			if [[ "$?" == "0" ]]; then
+				echo -e " ${green}Video_Tool updated succesfully! ${normal}"
+			else
+				echo -e " ${red}Video_Tool doesn't update succesfully! ${normal}"
+				exit 1
+			fi
+		else
+			echo -e "\n"
+			echo -e "${red}Cannot cd to directory ${orange}'/tmp/video-tool'${normal}"
+			exit 1
+		fi
+	else
+		echo -e "\n"
+		echo -e "${red}Cannot cd to directory ${orange}'/tmp'${normal}"
+		exit 1
+	fi
+
+	# Delet cloned repository
+	sudo rm -rf /tmp/video-tool
+}
+
+# ----------\Show version function\---------
+function show_version() {
+	echo -e "\n"
+	echo -e "Video_Tool, version v0.4 (x86_64-unknown-linux-gnu)
+Copyright (C) 2018 Free Software Foundation, Inc.
+License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>
+
+built with bash 4.4.23 (GNU/bash)
+"
+	return
+}
+
+# ----------\Show help function\----------
+function usage() {
+	echo "\n"
+	echo -e " Usage: video-tool [ -h | --help ],  [ -V | --version ], [ --uninstall ],   [ -U | --update ]"
+	return
+}
+
+# ----------\Input options\----------
+case "$1" in
+    "")    main    ;;
+    "--update" | "-U")    update    ;;
+	"--uninstall")    uninstall    ;;
+	"--help" | "-h")    usage    ;;
+	"--version" | "-V")    show_version    ;;
+	*)    usage    ;;
+esac;
+exit 0
+#!/bin/bash
+
+	# v0.1 --(20180815) add reduce_video_size function
+	# v0.2 --(20180816) add convert_video_format function
+	# v0.3 --(20180816) add show_version and uninstall function
+	# v0.4 --(20180816) add update function and installer script
+
+####################################################
+#                 Video_Tool V0.4                  #
+#  https://github.com/hessamashari/video-tool.git  #
+####################################################
+
+	# author : Hessam Ashari
+	# gitlab : https://gitlab.com/hessam.ashari/video-tool
+	# github : https://github.com/hessamashari/video-tool
+	# Email  : hessam.ashari@gmail.com
+
+normal="$(printf '\033[0m')"          # text mode
+# Colors
+red="$(printf '\033[0;31m')"  		  # red
+green="$(printf '\033[0;32m')"        # green
+orange="$(printf '\033[0;33m')"       # orange
+blue="$(printf '\033[0;34m')"         # blue
+white="$(printf '\033[0;37m')"        # white
+
+# ----------\Find video function\----------
+function find_video() {
+	clear
+
+	local inputDir="$1"
+	local IFS=":" # Use for sed
+
+	read -p "Please enter the name of video : " videoName
+
+	# Separating files that have video format
+	local videoTypes="\.webm$|\.flv$|\.vob$|\.ogg$|\.ogv$|\.drc$|\.gifv$|\.mng$|\.avi$|\.mov$|\.qt$|\.wmv$|\.yuv$|\.rm$|\.rmvb$|/.asf$|\.amv$|\.mp4$|\.m4v$|\.mp*$|\.m?v$|\.svi$|\.3gp$|\.ts$|\.flv$|\.f4v$"
+
+	echo -e "\n"
+	if [[ "$inputDir" == "/" ]]; then
+		sudo find / -type f -iname "*$videoName*" | grep -E "$videoTypes"
+		local searchDir=$(sudo find / -type f -iname "*$videoName*" | grep -E "$videoTypes")
+	else
+		find "$inputDir" -type f -iname "*$videoName*" | grep -E "$videoTypes"
+		local searchDir=$(find "$inputDir" -type f -iname "*$videoName*" | grep -E "$videoTypes")
+	fi
+
+		# Creat file with found videos and change \n to : on it
+		echo $searchDir > /tmp/searchDir
+		sed -i ':a;N;$!ba;s/\n/:/g' /tmp/searchDir
+
+	# Ask for all videos were found
+	for videoPath in $(cat /tmp/searchDir); do
+		echo -e "\n"
+		read -p "${green} Would you like to work with ${orange}'$videoPath'${normal}? [Y/n] "  workWithThis
+
+		if [[ "$workWithThis" == "" || "$workWithThis" == "y" || "$workWithThis" == "Y" ]]; then
+			refer_related_func "$videoPath"
+		elif [[ "$workWithThis" == "n" || "$workWithThis" == "N" ]]; then
+			continue
+		else
+			echo -e "${red}Invalid argument!${normal}"
+			continue
+		fi
+	done
+
+	# Remove searchDir file
+	rm -rf /tmp/searchDir
+}
+
+# ----------\Select movie function\----------
+function select_video_path() {
+	# Ask for video path
+	read -p "${green}Do you want to search video for you ${orange}{search / s}${green} or you know the video location ${orange}{location / l}${normal} : " searchVideoAnswer
+	clear
+
+	echo -e "ُ${red}+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+${normal}"
+
+	if [[ "$searchVideoAnswer" == "search" || "$searchVideoAnswer" == "S" || "$searchVideoAnswer" == "s" ]]; then
+		read -p "Do you like to serach all of your system (Requires root access)? [Y/n] " searchAllSystem
+
+		if [[ "$searchAllSystem" == "" || "$searchAllSystem" == "y" || "$searchAllSystem" == "Y" ]]; then
+			# Search all of file system
+		    echo -e "This operation may take a while!"
+
+			find_video "/"
+		elif [[ "$searchAllSystem" == "n" || "$searchAllSystem" == "N" ]]; then
+			read -p "Do you like search this directory? [Y/n] " workingDirectory
+
+			if [[ "$workingDirectory" == "" || "$workingDirectory" == "y" || "$workingDirectory" == "Y" ]]; then
+				# Search current directory
+
+				find_video "$PWD"
+			elif [[ "$workingDirectory" == "n" || "$workingDirectory" == "N" ]]; then
+				# Search entered path
+				read -p "Enter a directory : " -i "" -e userEnteredPath
+					if [[ "$userEnteredPath" == "/" ]]; then
+						echo -e "${red}You have to chose first option :)${normal}"
+					else
+						find_video "$userEnteredPath"
+					fi
+			else
+				echo -e "${red}Invalid argument!${normal}"
+				exit 1
+			fi
+		else
+		    echo -e "${red}Invalid argument!${normal}"
+			exit 1
+		fi
+	elif [[ "$searchVideoAnswer" == "location" || "$searchVideoAnswer" == "L" || "$searchVideoAnswer" == "l" ]]; then
+		# Read path/to/video
+		read -p "Enter path of the video : " -i "" -e videoPath
+
+		refer_related_func "$videoPath"
+	else
+		echo -e "${red}Invalid argument!${normal}"
+		exit 1
+	fi
+}
+
+# ----------\Reduce video size function\----------
+function reduce_video_size() {
+	clear
+
+	local inputVideo="$1"
+
+	# Check access to video
+	if [[ -r "$inputVideo" ]]; then
+		read -p "Do you want to rename the new video? [Y/n] " renameNewVideo
+
+		if [[ "$renameNewVideo" == "" || "$renameNewVideo" == "Y" || "$renameNewVideo" == "y" ]]; then
+			read -p "Please write the new name : " newVideoName
+
+			ffmpeg -i "$inputVideo" -vcodec h264 -acodec aac -strict -2 "$newVideoName.mp4"
+
+			if [[ "$?" == "0" ]]; then
+				echo -e "\n"
+				echo -e "${green}Your video is ready : ${orange}$newVideoName${normal}"
+			else
+				echo -e "\n"
+				echo -e "${red}Proccess doesn't finish succesfully!${normal}"
+				exit 1
+			fi
+		elif [[ "$renameNewVideo" == "n" || "$renameNewVideo" == "N" ]]; then
+
+			ffmpeg -i "$inputVideo" -vcodec h264 -acodec aac -strict -2 "$(echo "$inputVideo" | tr '.' ' ').mp4"
+
+			# Check operation
+			if [[ "$?" == "0" ]]; then
+				echo -e "\n"
+				echo -e "${green}Your video is ready : ${orange}$(echo "$inputVideo" | tr '.' ' ').mp4${normal}"
+			else
+				echo -e "\n"
+				echo -e "${red}Proccess doesn't finish succesfully!${normal}"
+				exit 1
+			fi
+		else
+			echo -e "${red}Invalid argument!${normal}"
+			exit 1
+		fi
+	else
+		echo -e "\n"
+		echo -e "${red}You haven't access to ${orange}'$inputVideo'${normal}"
+		exit 1
+	fi
+}
+
+# ----------\Change video format function\----------
+function convert_video_format() {
+	clear
+
+	local inputVideo="$1"
+	local videoFormts=("mkv" "mp4" "mp3" "mov" "ogg" "wmv" "webm" "vob" "avi" "flv" "3gp" "ogv" "m4v" "mng" "fv4" "svi" "amv") # Use for using fewer if
+
+	# Check access to video
+	if [[ -r "$inputVideo" ]]; then
+		echo -e "ُ${red}+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+${normal}"
+		read -p "${green}What format do you want to convert ?${normal}
+		1)${orange} mkv${normal}
+		2)${orange} mp4${normal}
+		3)${orange} mp3${normal}
+		4)${orange} mov${normal}
+		5)${orange} ogg${normal}
+		6)${orange} wmv${normal}
+		7)${orange} webm${normal}
+		8)${orange} vob${normal}
+		9)${orange} avi${normal}
+		10)${orange} flv${normal}
+		11)${orange} 3gp${normal}
+		12)${orange} ogv${normal}
+		13)${orange} m4v${normal}
+		14)${orange} mng${normal}
+		15)${orange} fv4${normal}
+		16)${orange} svi${normal}
+		17)${orange} amv${normal}
+
+		Enter the number of the option that you selected : " newVideoFormat
+		echo -e "ُ${red}+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+${normal}"
+
+		if [[ "$newVideoFormat" -gt "-1" && "$newVideoFormat" -lt $((${#videoFormts[@]}+1)) ]]; then
+			echo -e "${green}This operation may take a while because I do not like to put down the quality of your video!${normal}"
+			echo -e "\n"
+			sleep 2
+
+			# Change format
+			ffmpeg -i "$inputVideo" -c:v libx264 "$(echo "$inputVideo" | tr '.' ' ')".${videoFormts[$(("$newVideoFormat"-1))]}
+
+		else
+			echo -e "${red}Your selected number doesn't match with my options!${normal}"
+			exit 1
+		fi
+
+		# Check operation
+		if [[ "$?" == "0" ]]; then
+			echo -e "\n"
+			echo -e "${green}Your video is ready : ${orange}"$(echo "$inputVideo" | tr '.' ' ')".${videoFormts[$(("$newVideoFormat"-1))]} ${normal}"
+		else
+			echo -e "\n"
+			echo -e "${red}Proccess doesn't finish succesfully!${normal}"
+			exit 1
+		fi
+	else
+		echo -e "\n"
+		echo -e "${red}You haven't access to ${orange}'$inputVideo'${normal}"
+		exit 1
+	fi
+}
+
+# ----------\Refer to related function\----------
+function refer_related_func() {
+	local pathToVideo="$1"
+
+	if [[ "$selectedItem" == "1" ]]; then
+		reduce_video_size "$pathToVideo"
+	elif [[ "$selectedItem" == "2" ]]; then
+		convert_video_format "$pathToVideo"
+	fi
+}
+
+# ----------\Main function\----------
+function main() {
+	clear
+
+	echo -e "ُ${red}+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+${normal}"
+	read -p "${green}What can I do for you ???${normal}
+	1)${orange} Reduce video size.${normal}
+	2)${orange} Convert the video format.${normal}
+
+	Enter the number of the option that you selected : " selectedItem
+	echo -e "ُ${red}+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+${normal}"
+	if [[ "$selectedItem" -gt "0" && "$selectedItem" -lt "3" ]]; then
+		select_video_path
+	else
+		echo -e "${red}Invalid argument!${normal}"
+		exit 1
+	fi
+}
+
+# ----------\Uninstall function\----------
+function uninstall() {
+	clear
+
+	read -p "${red}Are you sure to uninstall video-tool??!! [y/N] ${normal}" deletVideoTool
+
+	# Remove dependencies
+	if [[ "$deletVideoTool" == "y" || "$deletVideoTool" == "Y" ]]; then
+		deleteDependencies="0"
+		# Checking if the distro is DebianBase / ArchBase / RedHatBase / SuseBase and running the correct command
+
+		if pacman -Q &> /dev/null; then # Check Arch
+			sudo pacman -Rs ffmpeg
+			# Check user's entered password
+			if [[ !("$?" == "0") ]]; then
+				deleteDependencies="1"
+			fi
+		elif apt list --installed &> /dev/null; then # Check Debian
+			sudo apt remove ffmpeg
+			# Check user's entered password
+			if [[ !("$?" == "0") ]]; then
+				deleteDependencies="1"
+			fi
+		elif dnf list &> /dev/null; then # Check Fedora
+			sudo dnf remove ffmpeg
+			# Check user's entered password
+			if [[ !("$?" == "0") ]]; then
+				deleteDependencies="1"
+			fi
+		elif zypper search i+ &> /dev/null; then # Check openSUSE
+			sudo zypper remove ffmpeg
+			# Check user's entered password
+			if [[ !("$?" == "0") ]]; then
+				deleteDependencies="1"
+			fi
+		else
+			echo -e "${red}Your distro is neither ArchBase or DebianBase or RedHatBase or SuseBase So,
+			 The script is not going to work in your distro and you have uninstall the dependencies manually.${normal}"
+			deleteDependencies="1"
+		fi
+
+		# Removing video-tool Command
+		if [[ "$deleteDependencies" == "0" ]]; then
+			sudo rm -f /usr/bin/video-tool
+			if [[ "$?" == "0" ]]; then
+				echo -e "\n"
+				echo -e "${red}video-tool succesfully uninstalled :( ${normal}"
+			else
+				echo -e "\n"
+				echo -e "${green}video-tool doesn't uninstall succesfully :) ${normal}"
+				exit 1
+			fi
+		else
+			echo -e "\n"
+			echo -e "${green}video-tool doesn't uninstall succesfully :) ${normal}"
+			exit 1
+		fi
+	elif [[ "$deletVideoTool" == "" || "$deletVideoTool" == "n" || "$deletVideoTool" == "N" ]]; then
+		echo -e "\n"
+		echo -e "${green}video-tool is still installed :) ${normal}"
+		return
+	else
+		echo -e "${red}Invalid argument! ${normal}"
+		exit 1
+	fi
+}
+
+# ----------\Update function\----------
+function update() {
+	clear
+
+	# Check place of repo for existing files
+	if [[ -d /tmp/video-tool/ ]]; then
+		sudo rm -rf /tmp/video-tool/
+	fi
+
+	# Check access of /tmp
+	if cd /tmp/ &> /dev/null; then
+		git clone https://github.com/hessamashari/video-tool.git /tmp/video-tool
+		sleep 2
+		echo -e "\n"
+		# Check access of /tmp/video-tool
+		if cd /tmp/video-tool/ &> /dev/null; then
+			# Replace older program with newer
+			sudo cp /tmp/video-tool/video-tool /usr/bin/video-tool
+			sudo chmod 755 /usr/bin/video-tool
+			echo -e "\n"
+			# Check operation
+			if [[ "$?" == "0" ]]; then
+				echo -e " ${green}Video_Tool updated succesfully! ${normal}"
+			else
+				echo -e " ${red}Video_Tool doesn't update succesfully! ${normal}"
+				exit 1
+			fi
+		else
+			echo -e "\n"
+			echo -e "${red}Cannot cd to directory ${orange}'/tmp/video-tool'${normal}"
+			exit 1
+		fi
+	else
+		echo -e "\n"
+		echo -e "${red}Cannot cd to directory ${orange}'/tmp'${normal}"
+		exit 1
+	fi
+
+	# Delet cloned repository
+	sudo rm -rf /tmp/video-tool
+}
+
+# ----------\Show version function\---------
+function show_version() {
+	echo -e "\n"
+	echo -e "Video_Tool, version v0.4 (x86_64-unknown-linux-gnu)
+Copyright (C) 2018 Free Software Foundation, Inc.
+License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>
+
+built with bash 4.4.23 (GNU/bash)
+"
+	return
+}
+
+# ----------\Show help function\----------
+function usage() {
+	echo "\n"
+	echo -e " Usage: video-tool [ -h | --help ],  [ -V | --version ], [ --uninstall ],   [ -U | --update ]"
+	return
+}
+
+# ----------\Input options\----------
+case "$1" in
+    "")    main    ;;
+    "--update" | "-U")    update    ;;
+	"--uninstall")    uninstall    ;;
+	"--help" | "-h")    usage    ;;
+	"--version" | "-V")    show_version    ;;
+	*)    usage    ;;
+esac;
+exit 0
+#!/bin/bash
+
+	# v0.1 --(20180815) add reduce_video_size function
+	# v0.2 --(20180816) add convert_video_format function
+	# v0.3 --(20180816) add show_version and uninstall function
+	# v0.4 --(20180816) add update function and installer script
+
+####################################################
+#                 Video_Tool V0.4                  #
+#  https://github.com/hessamashari/video-tool.git  #
+####################################################
+
+	# author : Hessam Ashari
+	# gitlab : https://gitlab.com/hessam.ashari/video-tool
+	# github : https://github.com/hessamashari/video-tool
+	# Email  : hessam.ashari@gmail.com
+
+normal="$(printf '\033[0m')"          # text mode
+# Colors
+red="$(printf '\033[0;31m')"  		  # red
+green="$(printf '\033[0;32m')"        # green
+orange="$(printf '\033[0;33m')"       # orange
+blue="$(printf '\033[0;34m')"         # blue
+white="$(printf '\033[0;37m')"        # white
+
+# Import functions
+source /usr/share/src/main/select.sh
+
+# ----------\Main function\----------
+function main() {
+	clear
+
+	echo -e "ُ${red}+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+${normal}"
+	read -p "${green}What can I do for you ???${normal}
+	1)${orange} Reduce video size.${normal}
+	2)${orange} Convert the video format.${normal}
+
+	Enter the number of the option that you selected : " selectedItem
+	echo -e "ُ${red}+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+${normal}"
+	if [[ "$selectedItem" -gt "0" && "$selectedItem" -lt "3" ]]; then
+		select_video_path
+	else
+		echo -e "${red}Invalid argument!${normal}"
+		exit 1
+	fi
+}
+
+# ----------\Uninstall function\----------
+function uninstall() {
+	clear
+
+	read -p "${red}Are you sure to uninstall video-tool??!! [y/N] ${normal}" deletVideoTool
+
+	# Remove dependencies
+	if [[ "$deletVideoTool" == "y" || "$deletVideoTool" == "Y" ]]; then
+		deleteDependencies="0"
+		# Checking if the distro is DebianBase / ArchBase / RedHatBase / SuseBase and running the correct command
+
+		if pacman -Q &> /dev/null; then # Check Arch
+			sudo pacman -Rs ffmpeg
+			# Check user's entered password
+			if [[ !("$?" == "0") ]]; then
+				deleteDependencies="1"
+			fi
+		elif apt list --installed &> /dev/null; then # Check Debian
+			sudo apt remove ffmpeg
+			# Check user's entered password
+			if [[ !("$?" == "0") ]]; then
+				deleteDependencies="1"
+			fi
+		elif dnf list &> /dev/null; then # Check Fedora
+			sudo dnf remove ffmpeg
+			# Check user's entered password
+			if [[ !("$?" == "0") ]]; then
+				deleteDependencies="1"
+			fi
+		elif zypper search i+ &> /dev/null; then # Check openSUSE
+			sudo zypper remove ffmpeg
+			# Check user's entered password
+			if [[ !("$?" == "0") ]]; then
+				deleteDependencies="1"
+			fi
+		else
+			echo -e "${red}Your distro is neither ArchBase or DebianBase or RedHatBase or SuseBase So,
+			 The script is not going to work in your distro and you have uninstall the dependencies manually.${normal}"
+			deleteDependencies="1"
+		fi
+
+		# Removing video-tool Command
+		if [[ "$deleteDependencies" == "0" ]]; then
+			sudo rm -f /usr/bin/video-tool
+			if [[ "$?" == "0" ]]; then
+				echo -e "\n"
+				echo -e "${red}video-tool succesfully uninstalled :( ${normal}"
+			else
+				echo -e "\n"
+				echo -e "${green}video-tool doesn't uninstall succesfully :) ${normal}"
+				exit 1
+			fi
+		else
+			echo -e "\n"
+			echo -e "${green}video-tool doesn't uninstall succesfully :) ${normal}"
+			exit 1
+		fi
+	elif [[ "$deletVideoTool" == "" || "$deletVideoTool" == "n" || "$deletVideoTool" == "N" ]]; then
+		echo -e "\n"
+		echo -e "${green}video-tool is still installed :) ${normal}"
+		return
+	else
+		echo -e "${red}Invalid argument! ${normal}"
+		exit 1
+	fi
+}
+
+# ----------\Update function\----------
+function update() {
+	clear
+
+	# Check place of repo for existing files
+	if [[ -d /tmp/video-tool/ ]]; then
+		sudo rm -rf /tmp/video-tool/
+	fi
+
+	# Check access of /tmp
+	if cd /tmp/ &> /dev/null; then
+		git clone https://github.com/hessamashari/video-tool.git /tmp/video-tool
+		sleep 2
+		echo -e "\n"
+		# Check access of /tmp/video-tool
+		if cd /tmp/video-tool/ &> /dev/null; then
+			# Replace older program with newer
+			sudo cp /tmp/video-tool/video-tool /usr/bin/video-tool
+			sudo chmod 755 /usr/bin/video-tool
+			echo -e "\n"
+			# Check operation
+			if [[ "$?" == "0" ]]; then
+				echo -e " ${green}Video_Tool updated succesfully! ${normal}"
+			else
+				echo -e " ${red}Video_Tool doesn't update succesfully! ${normal}"
+				exit 1
+			fi
+		else
+			echo -e "\n"
+			echo -e "${red}Cannot cd to directory ${orange}'/tmp/video-tool'${normal}"
+			exit 1
+		fi
+	else
+		echo -e "\n"
+		echo -e "${red}Cannot cd to directory ${orange}'/tmp'${normal}"
+		exit 1
+	fi
+
+	# Delet cloned repository
+	sudo rm -rf /tmp/video-tool
+}
+
+# ----------\Show version function\---------
+function show_version() {
+	echo -e "\n"
+	echo -e "Video_Tool, version v0.4 (x86_64-unknown-linux-gnu)
+Copyright (C) 2018 Free Software Foundation, Inc.
+License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>
+
+built with bash 4.4.23 (GNU/bash)
+"
+	return
+}
+
+# ----------\Show help function\----------
+function usage() {
+	echo "\n"
+	echo -e " Usage: video-tool [ -h | --help ],  [ -V | --version ], [ --uninstall ],   [ -U | --update ]"
+	return
+}
+
+# ----------\Input options\----------
+case "$1" in
+    "")    main    ;;
+    "--update" | "-U")    update    ;;
+	"--uninstall")    uninstall    ;;
+	"--help" | "-h")    usage    ;;
+	"--version" | "-V")    show_version    ;;
+	*)    usage    ;;
+esac;
+exit 0
