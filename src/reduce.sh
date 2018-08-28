@@ -1,5 +1,7 @@
 #!/bin/bash
 
+    # This is the part of Video_Tool project on https://github.com/hessamashari/video-tool
+
 normal="$(printf '\033[0m')"          # text mode
 # Colors
 red="$(printf '\033[0;31m')"  		  # red
@@ -8,7 +10,7 @@ orange="$(printf '\033[0;33m')"       # orange
 blue="$(printf '\033[0;34m')"         # blue
 white="$(printf '\033[0;37m')"        # white
 
-# ----------\Reduce video size function\----------
+# ----------\Reduce the size of video function\----------
 function reduce_video_size() {
 	clear
 
@@ -35,7 +37,7 @@ function reduce_video_size() {
 
 			ffmpeg -i "$inputVideo" -vcodec h264 -acodec aac -strict -2 "$(echo "$inputVideo" | tr '.' ' ').mp4"
 
-			# Check operation
+			# Check the correctness of the operation
 			if [[ "$?" == "0" ]]; then
 				echo -e "\n"
 				echo -e "${green}Your video is ready : ${orange}$(echo "$inputVideo" | tr '.' ' ').mp4${normal}"

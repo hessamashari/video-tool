@@ -1,5 +1,7 @@
 #!/bin/bash
 
+    # This is the part of Video_Tool project on https://github.com/hessamashari/video-tool
+
 normal="$(printf '\033[0m')"          # text mode
 # Colors
 red="$(printf '\033[0;31m')"  		  # red
@@ -8,7 +10,7 @@ orange="$(printf '\033[0;33m')"       # orange
 blue="$(printf '\033[0;34m')"         # blue
 white="$(printf '\033[0;37m')"        # white
 
-# ----------\Change video format function\----------
+# ----------\Change format on video function\----------
 function convert_video_format() {
 	clear
 
@@ -40,6 +42,7 @@ function convert_video_format() {
 		Enter the number of the option that you selected : " newVideoFormat
 		echo -e "ُ${red}+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+${normal}"
 
+        # Check the given number is larger than options or not
 		if [[ "$newVideoFormat" -gt "-1" && "$newVideoFormat" -lt $((${#videoFormts[@]}+1)) ]]; then
 			echo -e "${green}This operation may take a while because I do not like to put down the quality of your video!${normal}"
 			echo -e "\n"
@@ -53,7 +56,7 @@ function convert_video_format() {
 			exit 1
 		fi
 
-		# Check operation
+		# Check the correctness of the operation
 		if [[ "$?" == "0" ]]; then
 			echo -e "\n"
 			echo -e "${green}Your video is ready : ${orange}"$(echo "$inputVideo" | tr '.' ' ')".${videoFormts[$(("$newVideoFormat"-1))]} ${normal}"

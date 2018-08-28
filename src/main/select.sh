@@ -1,5 +1,7 @@
 #!/bin/bash
 
+    # This is the part of Video_Tool project on https://github.com/hessamashari/video-tool
+
 normal="$(printf '\033[0m')"          # text mode
 # Colors
 red="$(printf '\033[0;31m')"  		  # red
@@ -8,6 +10,7 @@ orange="$(printf '\033[0;33m')"       # orange
 blue="$(printf '\033[0;34m')"         # blue
 white="$(printf '\033[0;37m')"        # white
 
+# Import functions
 source src/main/find.sh 
 source src/main/refer.sh 
 

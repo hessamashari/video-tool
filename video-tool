@@ -4,7 +4,7 @@
 	# v0.2 --(20180816) add convert_video_format function
 	# v0.3 --(20180816) add show_version and uninstall function
 	# v0.4 --(20180816) add update function and installer script
-	# v0.5 --(20180828) add src and src/main folder and move functions to them
+	# v0.5 --(20180828) add src and src/main directories and move functions to them
 
 ####################################################
 #                 Video_Tool V0.5                  #
@@ -133,7 +133,7 @@ function update() {
 			sudo cp /tmp/video-tool/video-tool /usr/bin/video-tool
 			sudo chmod 755 /usr/bin/video-tool
 			echo -e "\n"
-			# Check operation
+			# Check the correctness of the operation
 			if [[ "$?" == "0" ]]; then
 				echo -e " ${green}Video_Tool updated succesfully! ${normal}"
 			else
@@ -162,8 +162,7 @@ function show_version() {
 Copyright (C) 2018 Free Software Foundation, Inc.
 License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>
 
-built with bash 4.4.23 (GNU/bash)
-"
+built with bash 4.4.23 (GNU/bash)"
 	return
 }
 
