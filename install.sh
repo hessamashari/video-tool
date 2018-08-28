@@ -65,6 +65,7 @@ fi
 # ----------\Adding video-tool Command\----------
 if [ "$checkDistro" == "0" ]; then
 	sed "s/source src/source \/usr\/share\/src/g" video-tool | sudo tee /usr/bin/video-tool 1>/dev/null 2>&1
+	sudo chmod 755 /usr/bin/video-tool
 
 	sudo mkdir /usr/share/video-tool
 	sudo cp -r src/ /usr/share/video-tool/
