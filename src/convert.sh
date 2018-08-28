@@ -1,5 +1,13 @@
 #!/bin/bash
 
+normal="$(printf '\033[0m')"          # text mode
+# Colors
+red="$(printf '\033[0;31m')"  		  # red
+green="$(printf '\033[0;32m')"        # green
+orange="$(printf '\033[0;33m')"       # orange
+blue="$(printf '\033[0;34m')"         # blue
+white="$(printf '\033[0;37m')"        # white
+
 # ----------\Change video format function\----------
 function convert_video_format() {
 	clear
@@ -35,7 +43,7 @@ function convert_video_format() {
 		if [[ "$newVideoFormat" -gt "-1" && "$newVideoFormat" -lt $((${#videoFormts[@]}+1)) ]]; then
 			echo -e "${green}This operation may take a while because I do not like to put down the quality of your video!${normal}"
 			echo -e "\n"
-			sleep 2
+			sleep 5
 
 			# Change format
 			ffmpeg -i "$inputVideo" -c:v libx264 "$(echo "$inputVideo" | tr '.' ' ')".${videoFormts[$(("$newVideoFormat"-1))]}

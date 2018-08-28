@@ -4,9 +4,10 @@
 	# v0.2 --(20180816) add convert_video_format function
 	# v0.3 --(20180816) add show_version and uninstall function
 	# v0.4 --(20180816) add update function and installer script
+	# v0.5 --(20180828) add src and src/main folder and move functions to them
 
 ####################################################
-#                 Video_Tool V0.4                  #
+#                 Video_Tool V0.5                  #
 #  https://github.com/hessamashari/video-tool.git  #
 ####################################################
 
@@ -157,7 +158,7 @@ function update() {
 # ----------\Show version function\---------
 function show_version() {
 	echo -e "\n"
-	echo -e "Video_Tool, version v0.4 (x86_64-unknown-linux-gnu)
+	echo -e "Video_Tool, version v0.5 (x86_64-unknown-linux-gnu)
 Copyright (C) 2018 Free Software Foundation, Inc.
 License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>
 

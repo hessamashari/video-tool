@@ -1,5 +1,13 @@
 #!/bin/bash
 
+normal="$(printf '\033[0m')"          # text mode
+# Colors
+red="$(printf '\033[0;31m')"  		  # red
+green="$(printf '\033[0;32m')"        # green
+orange="$(printf '\033[0;33m')"       # orange
+blue="$(printf '\033[0;34m')"         # blue
+white="$(printf '\033[0;37m')"        # white
+
 source src/main/find.sh 
 source src/main/refer.sh 
 

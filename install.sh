@@ -23,7 +23,7 @@ echo "|          Video usefull commands powered by ffmpeg and find command      
 echo "|          Author: Hessam Ashari                                                         |"
 echo "|          Git repository: https://github.com/hessamashari/video-tool                    |"
 echo "|          Platform: GNU/Linux                                                           |"
-echo "|          Version: 0.4                                                                  |"
+echo "|          Version: 0.5                                                                  |"
 echo "+----------------------------------------------------------------------------------------+"
 echo -e "\n"
 
