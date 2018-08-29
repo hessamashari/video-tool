@@ -26,6 +26,8 @@ white="$(printf '\033[0;37m')"        # white
 
 # Import functions
 source src/main/select.sh
+source src/main/update.sh 
+source src/main/uninstall.sh 
 
 # ----------\Main function\----------
 function main() {
@@ -44,115 +46,6 @@ function main() {
 		echo -e "${red}Invalid argument!${normal}"
 		exit 1
 	fi
-}
-
-# ----------\Uninstall function\----------
-function uninstall() {
-	clear
-
-	read -p "${red}Are you sure to uninstall video-tool??!! [y/N] ${normal}" deletVideoTool
-
-	# Remove dependencies
-	if [[ "$deletVideoTool" == "y" || "$deletVideoTool" == "Y" ]]; then
-		deleteDependencies="0"
-		# Checking if the distro is DebianBase / ArchBase / RedHatBase / SuseBase and running the correct command
-
-		if pacman -Q &> /dev/null; then # Check Arch
-			sudo pacman -Rs ffmpeg
-			# Check user's entered password
-			if [[ !("$?" == "0") ]]; then
-				deleteDependencies="1"
-			fi
-		elif apt list --installed &> /dev/null; then # Check Debian
-			sudo apt remove ffmpeg
-			# Check user's entered password
-			if [[ !("$?" == "0") ]]; then
-				deleteDependencies="1"
-			fi
-		elif dnf list &> /dev/null; then # Check Fedora
-			sudo dnf remove ffmpeg
-			# Check user's entered password
-			if [[ !("$?" == "0") ]]; then
-				deleteDependencies="1"
-			fi
-		elif zypper search i+ &> /dev/null; then # Check openSUSE
-			sudo zypper remove ffmpeg
-			# Check user's entered password
-			if [[ !("$?" == "0") ]]; then
-				deleteDependencies="1"
-			fi
-		else
-			echo -e "${red}Your distro is neither ArchBase or DebianBase or RedHatBase or SuseBase So,
-			 The script is not going to work in your distro and you have uninstall the dependencies manually.${normal}"
-			deleteDependencies="1"
-		fi
-
-		# Removing video-tool Command
-		if [[ "$deleteDependencies" == "0" ]]; then
-			sudo rm -f /usr/bin/video-tool
-			if [[ "$?" == "0" ]]; then
-				echo -e "\n"
-				echo -e "${red}video-tool succesfully uninstalled :( ${normal}"
-			else
-				echo -e "\n"
-				echo -e "${green}video-tool doesn't uninstall succesfully :) ${normal}"
-				exit 1
-			fi
-		else
-			echo -e "\n"
-			echo -e "${green}video-tool doesn't uninstall succesfully :) ${normal}"
-			exit 1
-		fi
-	elif [[ "$deletVideoTool" == "" || "$deletVideoTool" == "n" || "$deletVideoTool" == "N" ]]; then
-		echo -e "\n"
-		echo -e "${green}video-tool is still installed :) ${normal}"
-		return
-	else
-		echo -e "${red}Invalid argument! ${normal}"
-		exit 1
-	fi
-}
-
-# ----------\Update function\----------
-function update() {
-	clear
-
-	# Check place of repo for existing files
-	if [[ -d /tmp/video-tool/ ]]; then
-		sudo rm -rf /tmp/video-tool/
-	fi
-
-	# Check access of /tmp
-	if cd /tmp/ &> /dev/null; then
-		git clone https://github.com/hessamashari/video-tool.git /tmp/video-tool
-		sleep 2
-		echo -e "\n"
-		# Check access of /tmp/video-tool
-		if cd /tmp/video-tool/ &> /dev/null; then
-			# Replace older program with newer
-			sudo cp /tmp/video-tool/video-tool /usr/bin/video-tool
-			sudo chmod 755 /usr/bin/video-tool
-			echo -e "\n"
-			# Check the correctness of the operation
-			if [[ "$?" == "0" ]]; then
-				echo -e " ${green}Video_Tool updated succesfully! ${normal}"
-			else
-				echo -e " ${red}Video_Tool doesn't update succesfully! ${normal}"
-				exit 1
-			fi
-		else
-			echo -e "\n"
-			echo -e "${red}Cannot cd to directory ${orange}'/tmp/video-tool'${normal}"
-			exit 1
-		fi
-	else
-		echo -e "\n"
-		echo -e "${red}Cannot cd to directory ${orange}'/tmp'${normal}"
-		exit 1
-	fi
-
-	# Delet cloned repository
-	sudo rm -rf /tmp/video-tool
 }
 
 # ----------\Show version function\---------
