@@ -21,23 +21,29 @@ function update() {
 
 	# Check access of /tmp
 	if cd /tmp/ &> /dev/null; then
-		git clone https://github.com/hessamashari/video-tool.git /tmp/video-tool
+		git clone https://github.com/hessamashari/video-tool.git /tmp/video-tool/
 		sleep 2
 
 		echo -e "\n"
 		# Check access of /tmp/video-tool
 		if cd /tmp/video-tool/ &> /dev/null; then
 			# Replace older program with newer
-            sed "s/source src/source \/usr\/share\/video-tool\/src/g" /tmp/video-tool/video-tool | sudo tee /usr/bin/video-tool 1>/dev/null 2>&1
+            sudo sed -i "s@src@\/usr\/share\/video-tool\/src@g" /tmp/video-tool/video-tool
+            sudo cp /tmp/video-tool/video-tool /usr/bin/video-tool
 	        sudo chmod 755 /usr/bin/video-tool
 
             # Replace older project files with newer
-            sudo cp -r /tmp/video-tool/src /usr/share/video-tool/
-            sudo chmod -R 755 /usr/share/video-tool
+            sudo rm -rf /usr/share/video-tool/
+            sudo mkdir -p /usr/share/video-tool/
+            sudo cp -r /tmp/video-tool/src/ /usr/share/video-tool/
+            sudo chmod -R 755 /usr/share/video-tool/
 
             # Change path's in project files
             for i in $(find /usr/share/video-tool -type f); do 
-                sudo sed -i "s/source src/source \/usr\/share\/video-tool\/src/g" $i 
+                if [[ "$i" == "/usr/share/video-tool/src/main/update.sh" ]]; then
+                    break;
+                fi
+                sudo sed -i "s@src@\/usr\/share\/video-tool\/src@g" $i
             done
 
 			echo -e "\n"

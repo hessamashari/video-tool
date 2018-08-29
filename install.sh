@@ -65,7 +65,7 @@ fi
 # ----------\Adding video-tool Command and files\----------
 if [ "$checkDistro" == "0" ]; then
 	# Add command and changes path's
-	sed "s/source src/source \/usr\/share\/video-tool\/src/g" video-tool | sudo tee /usr/bin/video-tool 1>/dev/null 2>&1
+	sed "s@src@\/usr\/share\/video-tool\/src@g" video-tool | sudo tee /usr/bin/video-tool 1>/dev/null 2>&1
 	sudo chmod 755 /usr/bin/video-tool
 
 	# Add project files and resourses 
@@ -75,7 +75,10 @@ if [ "$checkDistro" == "0" ]; then
 
 	# Change path's in project files
 	for i in $(find /usr/share/video-tool -type f); do 
-		sudo sed -i "s/source src/source \/usr\/share\/video-tool\/src/g" $i 
+		if [[ "$i" == "/usr/share/video-tool/src/main/update.sh" ]]; then
+			break;
+		fi
+		sudo sed -i "s@src@\/usr\/share\/video-tool\/src@g" $i
 	done
 
 	# Check the correctness of the operation
