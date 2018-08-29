@@ -2,10 +2,17 @@
 
 # Video_Tool installer
 
-	# author : Hessam Ashari
-	# gitlab : https://gitlab.com/hessam.ashari/video-tool
-	# github : https://github.com/hessamashari/video-tool
-	# Email  : hessam.ashari@gmail.com
+	# This file is part of Video_Tool.
+	#
+	# Video_Tool is free software: you can redistribute it and/or modify
+	# it under the terms of the GNU General Public License as published by
+	# the Free Software Foundation, either version 3 of the License, or
+	# (at your option) any later version.
+	#
+	# Video_Tool is distributed in the hope that it will be useful,
+	# but WITHOUT ANY WARRANTY; without even the implied warranty of
+	# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+	# GNU General Public License for more details.
 
 clear
 
@@ -23,6 +30,7 @@ echo "|          Usefull commands used for videos are in a project              
 echo "|          Author: Hessam Ashari                                                |"
 echo "|          Git repository: https://github.com/hessamashari/video-tool           |"
 echo "|          Platform: GNU/Linux                                                  |"
+echo "|			 LICENSE: GNU GPLv3													  |"
 echo "|          Version: 0.5                                                         |"
 echo "+-------------------------------------------------------------------------------+"
 echo -e "\n"

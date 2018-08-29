@@ -1,6 +1,16 @@
 #!/bin/bash
 
-    # This is the part of Video_Tool project on https://github.com/hessamashari/video-tool
+	# This file is part of Video_Tool.
+	#
+	# Video_Tool is free software: you can redistribute it and/or modify
+	# it under the terms of the GNU General Public License as published by
+	# the Free Software Foundation, either version 3 of the License, or
+	# (at your option) any later version.
+	#
+	# Video_Tool is distributed in the hope that it will be useful,
+	# but WITHOUT ANY WARRANTY; without even the implied warranty of
+	# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+	# GNU General Public License for more details.
 
 normal="$(printf '\033[0m')"          # text mode
 # Colors
@@ -15,7 +25,7 @@ source src/main/find.sh
 source src/main/refer.sh 
 
 # ----------\Select movie function\----------
-function select_video_path() {
+select_video_path() {
 	# Ask for video path
 	read -p "${green}Do you want to search video for you ${orange}{search / s}${green} or you know the video location ${orange}{location / l}${normal} : " searchVideoAnswer
 	clear

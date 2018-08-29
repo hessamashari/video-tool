@@ -1,6 +1,16 @@
 #!/bin/bash
 
-    # This is the part of Video_Tool project on https://github.com/hessamashari/video-tool
+	# This file is part of Video_Tool.
+	#
+	# Video_Tool is free software: you can redistribute it and/or modify
+	# it under the terms of the GNU General Public License as published by
+	# the Free Software Foundation, either version 3 of the License, or
+	# (at your option) any later version.
+	#
+	# Video_Tool is distributed in the hope that it will be useful,
+	# but WITHOUT ANY WARRANTY; without even the implied warranty of
+	# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+	# GNU General Public License for more details.
 
 normal="$(printf '\033[0m')"          # text mode
 # Colors
@@ -11,7 +21,7 @@ blue="$(printf '\033[0;34m')"         # blue
 white="$(printf '\033[0;37m')"        # white
 
 # ----------\Change format on video function\----------
-function convert_video_format() {
+convert_video_format() {
 	clear
 
 	local inputVideo="$1"
