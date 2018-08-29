@@ -53,8 +53,14 @@ function uninstall() {
 
 		# Removing video-tool Command
 		if [[ "$deleteDependencies" == "0" ]]; then
+            # Remove command
 			sudo rm -f /usr/bin/video-tool
-			if [[ "$?" == "0" ]]; then
+			
+            # Remove other files
+            sudo rm -rf /usr/share/video-tool/
+
+            # Check the correctness of the operation
+            if [[ "$?" == "0" ]]; then
 				echo -e "\n"
 				echo -e "${red}video-tool succesfully uninstalled :( ${normal}"
 			else
