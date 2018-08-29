@@ -23,7 +23,7 @@ white="$(printf '\033[0;37m')"        # white
 # Import functions
 source src/main/refer.sh 
 
-# ----------\Find video function\----------
+# ---------- Find video function ----------
 find_video() {
 	clear
 

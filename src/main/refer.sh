@@ -24,7 +24,7 @@ white="$(printf '\033[0;37m')"        # white
 source src/convert.sh 
 source src/reduce.sh
 
-# ----------\Refer to related function on src\----------
+# ---------- Refer to related function on src ----------
 refer_related_func() {
 	local pathToVideo="$1"
 

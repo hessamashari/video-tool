@@ -24,7 +24,7 @@ white="$(printf '\033[0;37m')"        # white
 source src/main/find.sh 
 source src/main/refer.sh 
 
-# ----------\Select movie function\----------
+# ---------- Select movie function ----------
 select_video_path() {
 	# Ask for video path
 	read -p "${green}Do you want to search video for you ${orange}{search / s}${green} or you know the video location ${orange}{location / l}${normal} : " searchVideoAnswer

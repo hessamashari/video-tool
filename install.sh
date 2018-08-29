@@ -35,7 +35,7 @@ echo "|          Version: 0.5                                                   
 echo "+-------------------------------------------------------------------------------+"
 echo -e "\n"
 
-# ----------\Install dependencies\---------
+# ---------- Install dependencies ---------
 checkDistro="0"
 # Checking if the distro is DebianBase / ArchBase / RedHatBase / SuseBase and running the correct command
 
@@ -70,7 +70,7 @@ else
 	checkDistro="1"
 fi
 
-# ----------\Adding video-tool Command and files\----------
+# ---------- Adding video-tool Command and files ----------
 if [ "$checkDistro" == "0" ]; then
 	# Add command and changes path's
 	sed "s@src@\/usr\/share\/video-tool\/src@g" video-tool | sudo tee /usr/bin/video-tool 1>/dev/null 2>&1

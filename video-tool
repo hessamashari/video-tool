@@ -42,7 +42,7 @@ source src/main/select.sh
 source src/main/update.sh 
 source src/main/uninstall.sh 
 
-# ----------\Main function\----------
+# ---------- Main function ----------
 main() {
 	clear
 
@@ -61,7 +61,7 @@ main() {
 	fi
 }
 
-# ----------\Show version function\---------
+# ---------- Show version function ---------
 show_version() {
 	echo -e "\n"
 	echo -e "Video_Tool, version v0.5 (x86_64-unknown-linux-gnu)
@@ -72,14 +72,14 @@ built with bash 4.4.23 (GNU/bash)"
 	return
 }
 
-# ----------\Show help function\----------
+# ---------- Show help function ----------
 usage() {
 	echo "\n"
 	echo -e " Usage: video-tool [ -h | --help ],  [ -V | --version ], [ --uninstall ],   [ -U | --update ]"
 	return
 }
 
-# ----------\Input options\----------
+# ---------- Input options ----------
 case "$1" in
     "")    main    ;;
     "--update" | "-U")    update    ;;
