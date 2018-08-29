@@ -28,7 +28,7 @@ function update() {
 		# Check access of /tmp/video-tool
 		if cd /tmp/video-tool/ &> /dev/null; then
 			# Replace older program with newer
-            sed "s/source src/source \/usr\/share\/video-tool\/src/g" video-tool | sudo tee /usr/bin/video-tool 1>/dev/null 2>&1
+            sed "s/source src/source \/usr\/share\/video-tool\/src/g" /tmp/video-tool/video-tool | sudo tee /usr/bin/video-tool 1>/dev/null 2>&1
 	        sudo chmod 755 /usr/bin/video-tool
 
             # Replace older project files with newer
