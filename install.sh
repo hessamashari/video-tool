@@ -30,7 +30,7 @@ echo "|          Usefull commands used for videos are in a project              
 echo "|          Author: Hessam Ashari                                                |"
 echo "|          Git repository: https://github.com/hessamashari/video-tool           |"
 echo "|          Platform: GNU/Linux                                                  |"
-echo "|			 LICENSE: GNU GPLv3													  |"
+echo "|          LICENSE: GNU GPLv3                                                   |"
 echo "|          Version: 0.5                                                         |"
 echo "+-------------------------------------------------------------------------------+"
 echo -e "\n"
