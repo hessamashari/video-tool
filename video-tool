@@ -8,6 +8,7 @@
 	# v0.3 --(20180816) add show_version and uninstall function
 	# v0.4 --(20180816) add update function and installer script
 	# v0.5 --(20180828) add src and src/main directories and move functions to them
+	# v0.6 --(20180904) add join file for joining videos
 
 # author : Hessam Ashari
 # license: GPLv3
@@ -41,6 +42,7 @@ white="$(printf '\033[0;37m')"        # white
 source src/main/select.sh
 source src/main/update.sh 
 source src/main/uninstall.sh 
+source src/join.sh
 
 # ---------- Main function ----------
 main() {
@@ -50,11 +52,16 @@ main() {
 	read -p "${green}What can I do for you ???${normal}
 	1)${orange} Reduce video size.${normal}
 	2)${orange} Convert the video format.${normal}
+	3)${orange} Join videos.${normal}
 
 	Enter the number of the option that you selected : " selectedItem
 	echo -e "ُ${red}+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+${normal}"
-	if [[ "$selectedItem" -gt "0" && "$selectedItem" -lt "3" ]]; then
-		select_video_path
+	if [[ "$selectedItem" -gt "0" && "$selectedItem" -lt "4" ]]; then
+		if [[ "$selectedItem" == "3" ]]; then 
+			join_videos
+		else 
+			select_video_path
+		fi
 	else
 		echo -e "${red}Invalid argument!${normal}"
 		exit 1
@@ -64,18 +71,20 @@ main() {
 # ---------- Show version function ---------
 show_version() {
 	echo -e "\n"
-	echo -e "Video_Tool, version v0.5 (x86_64-unknown-linux-gnu)
-Copyright (C) 2018 Hessam Ashari.
-License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>
+	cat <<- EOF
+	Video_Tool, version v0.6 (x86_64-unknown-linux-gnu)
+	Copyright (C) 2018 Hessam Ashari.
+	License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>
 
-built with bash 4.4.23 (GNU/bash)"
+	built with bash 4.4.23 (GNU/bash)
+EOF
 	return
 }
 
 # ---------- Show help function ----------
 usage() {
 	echo "\n"
-	echo -e " Usage: video-tool [ -h | --help ],  [ -V | --version ], [ --uninstall ],   [ -U | --update ]"
+	echo -e " Usage: video-tool [ -h | --help ]  [ -V | --version ]  [ --uninstall ]  [ -U | --update ]"
 	return
 }
 

@@ -25,14 +25,16 @@ blue="$(printf '\033[0;34m')"         # blue
 white="$(printf '\033[0;37m')"        # white
 
 echo -e "\n"
-echo "+-------------------------------------------------------------------------------+"
-echo "|          Usefull commands used for videos are in a project                    |"
-echo "|          Author: Hessam Ashari                                                |"
-echo "|          Git repository: https://github.com/hessamashari/video-tool           |"
-echo "|          Platform: GNU/Linux                                                  |"
-echo "|          LICENSE: GNU GPLv3                                                   |"
-echo "|          Version: 0.5                                                         |"
-echo "+-------------------------------------------------------------------------------+"
+cat <<- EOF
++-------------------------------------------------------------------------------+
+|          Usefull commands used for videos are in a project                    |
+|          Author: Hessam Ashari                                                |
+|          Git repository: https://github.com/hessamashari/video-tool           |
+|          Platform: GNU/Linux                                                  |
+|          LICENSE: GNU GPLv3                                                   |
+|          Version: 0.6                                                         |
++-------------------------------------------------------------------------------+
+EOF
 echo -e "\n"
 
 # ---------- Install dependencies ---------

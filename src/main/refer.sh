@@ -23,6 +23,7 @@ white="$(printf '\033[0;37m')"        # white
 # Import functions
 source src/convert.sh 
 source src/reduce.sh
+source src/join.sh
 
 # ---------- Refer to related function on src ----------
 refer_related_func() {

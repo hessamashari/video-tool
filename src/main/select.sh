@@ -53,7 +53,7 @@ select_video_path() {
 					if [[ "$userEnteredPath" == "/" ]]; then
 						echo -e "${red}You have to chose first option :)${normal}"
 					else
-						find_video "$userEnteredPath"
+						[[ -d "$userEnteredPath" ]] && find_video "$userEnteredPath"
 					fi
 			else
 				echo -e "${red}Invalid argument!${normal}"
