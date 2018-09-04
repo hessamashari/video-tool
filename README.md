@@ -1,8 +1,10 @@
-# Hi. This script can
+# Hi. This is a script to simplify working with ffmpeg
+# It can :
 
 - Reduce size of video
 - Convert format of video
-- and more in progress
+- Join multiple videos together
+- and more in development
 
 ## Installation
 
@@ -73,5 +75,5 @@ $ video-tool --help
 Exit the program with Ctrl+C :)
 
 
-Pleas dont forget star  
+Please dont forget star  
 Tnx!
