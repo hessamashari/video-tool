@@ -33,7 +33,7 @@ find_video() {
 	read -p "Please enter the name of video : " videoName
 
 	# Separating files that have video format
-	local videoTypes="\.webm$|\.flv$|\.vob$|\.ogg$|\.ogv$|\.drc$|\.gifv$|\.mng$|\.avi$|\.mov$|\.qt$|\.wmv$|\.yuv$|\.rm$|\.rmvb$|/.asf$|\.amv$|\.mp4$|\.m4v$|\.mp*$|\.m?v$|\.svi$|\.3gp$|\.ts$|\.flv$|\.f4v$"
+	local videoTypes="\.webm$|\.flv$|\.vob$|\.ogg$|\.ogv$|\.mkv$|\.drc$|\.gifv$|\.mng$|\.avi$|\.mov$|\.qt$|\.wmv$|\.yuv$|\.rm$|\.rmvb$|/.asf$|\.amv$|\.mp4$|\.m4v$|\.mp*$|\.m?v$|\.svi$|\.3gp$|\.ts$|\.flv$|\.f4v$"
 
 	echo -e "\n"
 	if [[ "$inputDir" == "/" ]]; then
