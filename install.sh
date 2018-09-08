@@ -84,9 +84,11 @@ if [ "$checkDistro" == "0" ]; then
 	sudo chmod -R 755 /usr/share/video-tool/
 
 	# Change path's in project files
-	for i in $(find /usr/share/video-tool -type f); do 
+	src_files=$(find /usr/share/video-tool -type f)
+	for i in $src_files; do
+	       	sleep 1
 		if [[ "$i" == "/usr/share/video-tool/src/main/update.sh" ]]; then
-			break;
+			continue;
 		fi
 		sudo sed -i "s@src@\/usr\/share\/video-tool\/src@g" $i
 	done
