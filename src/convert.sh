@@ -59,7 +59,7 @@ convert_video_format() {
 			sleep 5
 
 			# Change format
-			ffmpeg -i "$inputVideo" -c:v libx264 "$(echo "$inputVideo" | tr '.' ' ')".${videoFormts[$(("$newVideoFormat"-1))]}
+			ffmpeg -i "$inputVideo" -codec copy "$(echo "$inputVideo" | tr '.' ' ')".${videoFormts[$(("$newVideoFormat"-1))]}
 
 		else
 			echo -e "${red}Your selected number doesn't match with my options!${normal}"
