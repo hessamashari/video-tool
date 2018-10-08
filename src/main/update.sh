@@ -51,7 +51,7 @@ update() {
             # Change path's in project files
             for i in $(find /usr/share/video-tool -type f); do 
                 if [[ "$i" == "/usr/share/video-tool/src/main/update.sh" ]]; then
-                    break;
+                    continue;
                 fi
                 sudo sed -i "s@src@\/usr\/share\/video-tool\/src@g" $i
             done
