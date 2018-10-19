@@ -76,4 +76,4 @@ Exit the program with Ctrl+C :)
 
 
 Please dont forget star  
-Tnx!
+Thanks!
