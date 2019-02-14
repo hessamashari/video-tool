@@ -58,7 +58,7 @@ main() {
 
     Enter the number of the option that you selected : " selectedItem
     echo -e "ُ${red}+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+${normal}"
-    if [[ "$selectedItem" -gt "0" && "$selectedItem" -lt "4" ]]; then
+    if [[ "$selectedItem" -gt "0" && "$selectedItem" -lt "6" ]]; then
         if [[ "$selectedItem" == "3" ]]; then
             join_videos
         else
