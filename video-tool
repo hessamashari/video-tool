@@ -3,12 +3,12 @@
 
 # Timeline
 
-	# v0.1 --(20180815) add reduce_video_size function
-	# v0.2 --(20180816) add convert_video_format function
-	# v0.3 --(20180816) add show_version and uninstall function
-	# v0.4 --(20180816) add update function and installer script
-	# v0.5 --(20180828) add src and src/main directories and move functions to them
-	# v0.6 --(20180904) add join file for joining videos
+# v0.1 --(20180815) add reduce_video_size function
+# v0.2 --(20180816) add convert_video_format function
+# v0.3 --(20180816) add show_version and uninstall function
+# v0.4 --(20180816) add update function and installer script
+# v0.5 --(20180828) add src and src/main directories and move functions to them
+# v0.6 --(20180904) add join file for joining videos
 
 # author : Hessam Ashari
 # license: GPLv3
@@ -40,37 +40,38 @@ white="$(printf '\033[0;37m')"        # white
 
 # Import functions
 source src/main/select.sh
-source src/main/update.sh 
-source src/main/uninstall.sh 
+source src/main/update.sh
+source src/main/uninstall.sh
 source src/join.sh
 
 # ---------- Main function ----------
 main() {
-	clear
-
-	echo -e "ُ${red}+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+${normal}"
-	read -p "${green}What can I do for you ???${normal}
+    clear
+    
+    echo -e "ُ${red}+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+${normal}"
+    read -p "${green}What can I do for you ???${normal}
 	1)${orange} Reduce video size.${normal}
 	2)${orange} Convert the video format.${normal}
 	3)${orange} Join videos.${normal}
+	4)${orange} Delete the audio of a video.${normal}
 
-	Enter the number of the option that you selected : " selectedItem
-	echo -e "ُ${red}+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+${normal}"
-	if [[ "$selectedItem" -gt "0" && "$selectedItem" -lt "4" ]]; then
-		if [[ "$selectedItem" == "3" ]]; then 
-			join_videos
-		else 
-			select_video_path
-		fi
-	else
-		echo -e "${red}Invalid argument!${normal}"
-		exit 1
-	fi
+    Enter the number of the option that you selected : " selectedItem
+    echo -e "ُ${red}+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+${normal}"
+    if [[ "$selectedItem" -gt "0" && "$selectedItem" -lt "4" ]]; then
+        if [[ "$selectedItem" == "3" ]]; then
+            join_videos
+        else
+            select_video_path
+        fi
+    else
+        echo -e "${red}Invalid argument!${normal}"
+        exit 1
+    fi
 }
 
 # ---------- Show version function ---------
 show_version() {
-	echo -e "\n"
+    echo -e "\n"
 	cat <<- EOF
 	Video_Tool, version v0.6 (x86_64-unknown-linux-gnu)
 	Copyright (C) 2018 Hessam Ashari.
@@ -78,23 +79,23 @@ show_version() {
 
 	built with bash 4.4.23 (GNU/bash)
 EOF
-	return
+    return
 }
 
 # ---------- Show help function ----------
 usage() {
-	echo "\n"
-	echo -e " Usage: video-tool [ -h | --help ]  [ -V | --version ]  [ --uninstall ]  [ -U | --update ]"
-	return
+    echo "\n"
+    echo -e " Usage: video-tool [ -h | --help ]  [ -V | --version ]  [ --uninstall ]  [ -U | --update ]"
+    return
 }
 
 # ---------- Input options ----------
 case "$1" in
     "")    main    ;;
     "--update" | "-U")    update    ;;
-	"--uninstall")    uninstall    ;;
-	"--help" | "-h")    usage    ;;
-	"--version" | "-V")    show_version    ;;
-	*)    usage    ;;
+    "--uninstall")    uninstall    ;;
+    "--help" | "-h")    usage    ;;
+    "--version" | "-V")    show_version    ;;
+    *)    usage    ;;
 esac;
 exit 0
