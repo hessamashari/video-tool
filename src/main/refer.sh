@@ -25,7 +25,7 @@ source src/convert.sh
 source src/reduce.sh
 source src/join.sh
 source src/deleteAudio.sh
-source src/extract_video_audio
+source src/extractAudio
 
 # ---------- Refer to related function on src ----------
 refer_related_func() {
