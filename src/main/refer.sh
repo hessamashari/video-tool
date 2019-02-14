@@ -25,6 +25,7 @@ source src/convert.sh
 source src/reduce.sh
 source src/join.sh
 source src/deleteAudio.sh
+source src/extract_video_audio
 
 # ---------- Refer to related function on src ----------
 refer_related_func() {
@@ -34,7 +35,9 @@ refer_related_func() {
         reduce_video_size "$pathToVideo"
     elif [[ "$selectedItem" == "2" ]]; then
         convert_video_format "$pathToVideo"
-    elif [[ "$selectedItem" == "2" ]]; then
+    elif [[ "$selectedItem" == "4" ]]; then
 		delete_video_audio "$pathToVideo"
+	elif [[ "$selectedItem" == "5" ]]; then
+		extract_video_audio "$pathToVideo"
     fi
 }

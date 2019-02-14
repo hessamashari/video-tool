@@ -21,36 +21,38 @@ blue="$(printf '\033[0;34m')"         # blue
 white="$(printf '\033[0;37m')"        # white
 
 # ---------- Reduce the size of video function ----------
-delete_video_audio() {
+extract_video_audio() {
     clear
 
     local inputVideo="$1"
 
     # Check access to video
     if [[ -r "$inputVideo" ]]; then
-        read -p "Do you want to rename the new video? [Y/n] " renameNewVideo
+        read -p "Do you want to rename the audio? [Y/n] " renameAudio
 
-        if [[ "$renameNewVideo" == "" || "$renameNewVideo" == "Y" || "$renameNewVideo" == "y" ]]; then
-            read -p "Please write the new name : " newVideoName
+        if [[ "$renameAudio" == "" || "$renameAudio" == "Y" || "$renameAudio" == "y" ]]; then
+            read -p "Please write the new name : " audioName
 
-			ffmpeg -i "$inputVideo" -vcodec copy -an "$newVideoName.mp4"
+			ffmpeg -i "$inputVideo" -vn -y "$audioName.mp3"
+
 
             if [[ "$?" == "0" ]]; then
                 echo -e "\n"
-                echo -e "${green}Your video is ready : ${orange}$newVideoName${normal}"
+                echo -e "${green}Your audio is ready : ${orange}$audioName${normal}"
             else
                 echo -e "\n"
                 echo -e "${red}Proccess doesn't finish succesfully!${normal}"
                 exit 1
             fi
-        elif [[ "$renameNewVideo" == "n" || "$renameNewVideo" == "N" ]]; then
+        elif [[ "$renameAudio" == "n" || "$renameAudio" == "N" ]]; then
 
-            ffmpeg -i "$inputVideo" -vcodec copy -an "$(echo "$inputVideo" | tr '.' ' ').mp4"
+            ffmpeg -i "$inputVideo" -vcodec h264 -acodec aac -strict -2 "$(echo "$inputVideo" | tr '.' ' ').mp4"
+			ffmpeg -i "$inputVideo" -vn -y "$(echo "$inputVideo" | tr '.' ' ').mp4"
 
             # Check the correctness of the operation
             if [[ "$?" == "0" ]]; then
                 echo -e "\n"
-                echo -e "${green}Your video is ready : ${orange}$(echo "$inputVideo" | tr '.' ' ').mp4${normal}"
+                echo -e "${green}Your audio is ready : ${orange}$(echo "$inputVideo" | tr '.' ' ').mp3${normal}"
             else
                 echo -e "\n"
                 echo -e "${red}Proccess doesn't finish succesfully!${normal}"

@@ -47,13 +47,14 @@ source src/join.sh
 # ---------- Main function ----------
 main() {
     clear
-    
+
     echo -e "ُ${red}+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+${normal}"
     read -p "${green}What can I do for you ???${normal}
 	1)${orange} Reduce video size.${normal}
 	2)${orange} Convert the video format.${normal}
 	3)${orange} Join videos.${normal}
 	4)${orange} Delete the audio of a video.${normal}
+	5)${orange} Extract the audio of a video.${normal}
 
     Enter the number of the option that you selected : " selectedItem
     echo -e "ُ${red}+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+${normal}"
