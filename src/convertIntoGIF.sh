@@ -21,37 +21,53 @@ blue="$(printf '\033[0;34m')"         # blue
 white="$(printf '\033[0;37m')"        # white
 
 # ---------- Reduce the size of video function ----------
-mute_video() {
+convert_video_into_gif() {
     clear
 
     local inputVideo="$1"
 
     # Check access to video
     if [[ -r "$inputVideo" ]]; then
-        read -p "Do you want to rename the new video? [Y/n] " renameNewVideo
+        read -p "Enter the width of the GIF or press Enter for default(1000:-1) : " widthOfGif
 
-        if [[ "$renameNewVideo" == "" || "$renameNewVideo" == "Y" || "$renameNewVideo" == "y" ]]; then
-            read -p "Please write the new name : " newVideoName
+        # Set default width for video
+        if [[ "$widthOfGif" == "" ]]; then
+            widthOfGif="1000:-1"
+        fi
 
-			ffmpeg -i "$inputVideo" -vcodec copy -an "$newVideoName.mp4"
+        read -p "Enter the duration of GIF in seconds : " durationOfGifSec
+
+        read -p "Enter the frame rate (fps) or press Enter for default(300) :  " frameRate
+
+        # Set default frameRate
+        if [[ "$frameRate" == "" ]]; then
+            frameRate="300"
+        fi
+
+        read -p "Do you want to rename the GIF? [Y/n] " renameGif
+
+        if [[ "$renameGif" == "" || "$renameGif" == "Y" || "$renameGif" == "y" ]]; then
+            read -p "Please write the name : " gifName
+
+            ffmpeg -i "$inputVideo" -vf scale="$widthOfGif" -t "$durationOfGifSec" -r "$frameRate" "$GifName.gif"
 
             # Check the correctness of the operation
             if [[ "$?" == "0" ]]; then
                 echo -e "\n"
-                echo -e "${green}Your video is ready : ${orange}$newVideoName${normal}"
+                echo -e "${green}Your GIF is ready : ${orange}$gifName.gif${normal}"
             else
                 echo -e "\n"
                 echo -e "${red}Proccess doesn't finish succesfully!${normal}"
                 exit 1
             fi
-        elif [[ "$renameNewVideo" == "n" || "$renameNewVideo" == "N" ]]; then
+        elif [[ "$renameGif" == "n" || "$renameGif" == "N" ]]; then
 
-            ffmpeg -i "$inputVideo" -vcodec copy -an "$(echo "$inputVideo" | tr '.' ' ').mp4"
+            ffmpeg -i "$inputVideo" -vf scale="$widthOfGif" -t "$durationOfGifSec" -r "$frameRate" "$(echo "$inputVideo" | tr '.' ' ').gif"
 
             # Check the correctness of the operation
             if [[ "$?" == "0" ]]; then
                 echo -e "\n"
-                echo -e "${green}Your video is ready : ${orange}$(echo "$inputVideo" | tr '.' ' ').mp4${normal}"
+                echo -e "${green}Your GIF is ready : ${orange}$(echo "$inputVideo" | tr '.' ' ').gif${normal}"
             else
                 echo -e "\n"
                 echo -e "${red}Proccess doesn't finish succesfully!${normal}"

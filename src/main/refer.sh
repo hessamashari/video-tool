@@ -27,6 +27,7 @@ source src/join.sh
 source src/removeAudio.sh
 source src/extractAudio.sh
 source src/cutIntoClip.sh
+source src/convertIntoGIF.sh
 
 # ---------- Refer to related function on src ----------
 refer_related_func() {
@@ -42,5 +43,7 @@ refer_related_func() {
 		extract_audio_from_video "$pathToVideo"
     elif [[ "$selectedItem" == "6" ]]; then
         cut_video_into_clip "$pathToVideo"
+    elif [[ "$selectedItem" == "7" ]]; then
+        convert_video_into_gif "$pathToVideo"
     fi
 }

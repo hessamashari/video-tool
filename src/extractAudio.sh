@@ -46,7 +46,6 @@ extract_audio_from_video() {
             fi
         elif [[ "$renameAudio" == "n" || "$renameAudio" == "N" ]]; then
 
-            #ffmpeg -i "$inputVideo" -vcodec h264 -acodec aac -strict -2 "$(echo "$inputVideo" | tr '.' ' ').mp4"
 			ffmpeg -i "$inputVideo" -vn -y "$(echo "$inputVideo" | tr '.' ' ').mp3"
 
             # Check the correctness of the operation

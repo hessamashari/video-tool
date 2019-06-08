@@ -56,10 +56,13 @@ main() {
         4)${orange} Mute a video.${normal}
         5)${orange} Extract the audio from video.${normal}
         6)${orange} Cut video into a smaller clip.${normal}
+        7)${orange} Convert a video into animated GIF.${normal}
 
     Enter the number of the option that you selected : " selectedItem
     echo -e "ُ${red}+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+${normal}"
-    if [[ "$selectedItem" -gt "0" && "$selectedItem" -lt "7" ]]; then
+
+    # Check the given number is greater than options or not
+    if [[ "$selectedItem" -gt "0" && "$selectedItem" -lt "8" ]]; then
         if [[ "$selectedItem" == "3" ]]; then
             join_videos
         else

@@ -35,6 +35,7 @@ reduce_video_size() {
 
 			ffmpeg -i "$inputVideo" -vcodec h264 -acodec aac -strict -2 "$newVideoName.mp4"
 
+			# Check the correctness of the operation
 			if [[ "$?" == "0" ]]; then
 				echo -e "\n"
 				echo -e "${green}Your video is ready : ${orange}$newVideoName${normal}"
