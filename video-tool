@@ -83,7 +83,7 @@ show_version() {
 	License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>
 
 	built with bash 4.4.23 (GNU/bash)
-EOF
+    EOF
     return
 }
 
