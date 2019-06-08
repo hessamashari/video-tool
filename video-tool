@@ -54,7 +54,7 @@ main() {
         2)${orange} Convert video format.${normal}
         3)${orange} Join videos.${normal}
         4)${orange} Mute a video.${normal}
-        5)${orange} Extract the audio of a video.${normal}
+        5)${orange} Extract the audio from video.${normal}
         6)${orange} Cut video into a smaller clip.${normal}
 
     Enter the number of the option that you selected : " selectedItem

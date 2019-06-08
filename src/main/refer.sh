@@ -39,7 +39,7 @@ refer_related_func() {
     elif [[ "$selectedItem" == "4" ]]; then
 		mute_video "$pathToVideo"
 	elif [[ "$selectedItem" == "5" ]]; then
-		extract_video_audio "$pathToVideo"
+		extract_audio_from_video "$pathToVideo"
     elif [[ "$selectedItem" == "6" ]]; then
         cut_video_into_clip "$pathToVideo"
     fi
