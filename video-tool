@@ -11,6 +11,7 @@
 # v0.6 --(20180904) add join video files for joining videos
 # v0.7 --(20190608) add cut_video_into_clip function
 # v0.8 --(20190608) add convert_video_into_gif function
+fix timeline
 
 # author : Hessam Ashari
 # license: GPLv3
