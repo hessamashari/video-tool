@@ -4,6 +4,9 @@
 - Reduce size of video
 - Convert format of video
 - Join multiple videos together
+- Remove the audio of a video
+- Extract the audio of a video
+- Cut a video into a smaller clip
 - and more in development
 
 ## Installation

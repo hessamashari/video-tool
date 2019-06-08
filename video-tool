@@ -50,15 +50,16 @@ main() {
 
     echo -e "ُ${red}+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+${normal}"
     read -p "${green}What can I do for you ???${normal}
-	1)${orange} Reduce video size.${normal}
-	2)${orange} Convert the video format.${normal}
-	3)${orange} Join videos.${normal}
-	4)${orange} Delete the audio of a video.${normal}
-	5)${orange} Extract the audio of a video.${normal}
+        1)${orange} Reduce video size.${normal}
+        2)${orange} Convert video format.${normal}
+        3)${orange} Join videos.${normal}
+        4)${orange} Mute a video.${normal}
+        5)${orange} Extract the audio of a video.${normal}
+        6)${orange} Cut video into a smaller clip.${normal}
 
     Enter the number of the option that you selected : " selectedItem
     echo -e "ُ${red}+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+${normal}"
-    if [[ "$selectedItem" -gt "0" && "$selectedItem" -lt "6" ]]; then
+    if [[ "$selectedItem" -gt "0" && "$selectedItem" -lt "7" ]]; then
         if [[ "$selectedItem" == "3" ]]; then
             join_videos
         else
@@ -74,7 +75,7 @@ main() {
 show_version() {
     echo -e "\n"
 	cat <<- EOF
-	Video_Tool, version v0.6 (x86_64-unknown-linux-gnu)
+	Video_Tool, version v0.7 (x86_64-unknown-linux-gnu)
 	Copyright (C) 2018 Hessam Ashari.
 	License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>
 
@@ -85,8 +86,8 @@ EOF
 
 # ---------- Show help function ----------
 usage() {
-    echo "\n"
-    echo -e " Usage: video-tool [ -h | --help ]  [ -V | --version ]  [ --uninstall ]  [ -U | --update ]"
+    echo -e "\n"
+    echo -e " Usage: video-tool [ -H | --help ]  [ -V | --version ]  [ --uninstall ]  [ -U | --update ]"
     return
 }
 
@@ -95,7 +96,7 @@ case "$1" in
     "")    main    ;;
     "--update" | "-U")    update    ;;
     "--uninstall")    uninstall    ;;
-    "--help" | "-h")    usage    ;;
+    "--help" | "-H")    usage    ;;
     "--version" | "-V")    show_version    ;;
     *)    usage    ;;
 esac;

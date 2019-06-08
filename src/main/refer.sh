@@ -24,8 +24,9 @@ white="$(printf '\033[0;37m')"        # white
 source src/convert.sh
 source src/reduce.sh
 source src/join.sh
-source src/deleteAudio.sh
+source src/removeAudio.sh
 source src/extractAudio.sh
+source src/cutIntoClip.sh
 
 # ---------- Refer to related function on src ----------
 refer_related_func() {
@@ -36,8 +37,10 @@ refer_related_func() {
     elif [[ "$selectedItem" == "2" ]]; then
         convert_video_format "$pathToVideo"
     elif [[ "$selectedItem" == "4" ]]; then
-		delete_video_audio "$pathToVideo"
+		mute_video "$pathToVideo"
 	elif [[ "$selectedItem" == "5" ]]; then
 		extract_video_audio "$pathToVideo"
+    elif [[ "$selectedItem" == "6" ]]; then
+        cut_video_into_clip "$pathToVideo"
     fi
 }

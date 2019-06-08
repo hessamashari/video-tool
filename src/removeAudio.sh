@@ -21,7 +21,7 @@ blue="$(printf '\033[0;34m')"         # blue
 white="$(printf '\033[0;37m')"        # white
 
 # ---------- Reduce the size of video function ----------
-delete_video_audio() {
+mute_video() {
     clear
 
     local inputVideo="$1"

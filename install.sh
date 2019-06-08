@@ -32,7 +32,7 @@ cat <<- EOF
 |          Git repository: https://github.com/hessamashari/video-tool           |
 |          Platform: GNU/Linux                                                  |
 |          LICENSE: GNU GPLv3                                                   |
-|          Version: 0.6                                                         |
+|          Version: 0.7                                                         |
 +-------------------------------------------------------------------------------+
 EOF
 echo -e "\n"
@@ -78,7 +78,7 @@ if [ "$checkDistro" == "0" ]; then
 	sed "s@src@\/usr\/share\/video-tool\/src@g" video-tool | sudo tee /usr/bin/video-tool 1>/dev/null 2>&1
 	sudo chmod 755 /usr/bin/video-tool
 
-	# Add project files and resourses 
+	# Add project files and resourses
 	sudo mkdir -p /usr/share/video-tool
 	sudo cp -r src/ /usr/share/video-tool/
 	sudo chmod -R 755 /usr/share/video-tool/
