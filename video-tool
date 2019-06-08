@@ -78,7 +78,7 @@ main() {
 show_version() {
     echo -e "\n"
 	cat <<- EOF
-	Video_Tool, version v0.7 (x86_64-unknown-linux-gnu)
+	Video_Tool, version v0.8 (x86_64-unknown-linux-gnu)
 	Copyright (C) 2018 Hessam Ashari.
 	License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>
 
