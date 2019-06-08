@@ -20,7 +20,7 @@ orange="$(printf '\033[0;33m')"       # orange
 blue="$(printf '\033[0;34m')"         # blue
 white="$(printf '\033[0;37m')"        # white
 
-# ---------- function to join video files ----------
+# ---------- function for join multiple video files ----------
 join_videos() {
     clear
 
@@ -30,12 +30,12 @@ join_videos() {
     [[ -f /tmp/videos.list || -w /tmp/videos.list ]] && rm -rf /tmp/videos.list 1> /dev/null 2>&1
 
     # Add path's to list file
-    while [[ "1" == "1" ]]; do 
+    while [[ "1" == "1" ]]; do
         read -p "   Enter path of video [${red} It must be absolute path ${normal}] : " -i "" -e pathOfVideo
 
         # Check access to video
-        if [[ -r "$pathOfVideo" ]]; then 
-            if cd /tmp/ &> /dev/null; then 
+        if [[ -r "$pathOfVideo" ]]; then
+            if cd /tmp/ &> /dev/null; then
                 echo "file '$pathOfVideo'" >> /tmp/videos.list    # Add each path to list
             else
 	            echo -e "\n"
@@ -62,17 +62,17 @@ join_videos() {
                 if [[ "$?" == "0" ]]; then
                     echo -e "\n"
                     echo -e "${green}Your video is ready : ${orange}$pathOfNewVideo$nameOfNewVideo.mp4${normal}"
-                    return 
+                    return
                 else
                     echo -e "\n"
                     echo -e "${red}Proccess doesn't finish succesfully!${normal}"
                     exit 1
                 fi
-            else 
+            else
                 echo -e "${red}Invalid argument! ${normal}"
                 exit 1
             fi
-        else 
+        else
             echo -e "\n"
             echo -e "${red}Video doesn't exist!!!${normal}"
             exit 1

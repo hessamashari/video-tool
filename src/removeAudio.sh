@@ -20,7 +20,7 @@ orange="$(printf '\033[0;33m')"       # orange
 blue="$(printf '\033[0;34m')"         # blue
 white="$(printf '\033[0;37m')"        # white
 
-# ---------- Reduce the size of video function ----------
+# ---------- Remove the audio of video ----------
 mute_video() {
     clear
 

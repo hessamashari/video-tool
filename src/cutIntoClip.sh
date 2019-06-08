@@ -20,7 +20,7 @@ orange="$(printf '\033[0;33m')"       # orange
 blue="$(printf '\033[0;34m')"         # blue
 white="$(printf '\033[0;37m')"        # white
 
-# ---------- Reduce the size of video function ----------
+# ---------- Cut the video into a clip function ----------
 cut_video_into_clip() {
 	clear
 
@@ -43,7 +43,7 @@ cut_video_into_clip() {
 			read -p "Please write the new name : " newVideoName
 
             ffmpeg -i "$inputVideo" -ss "$startTimeStamp" -codec copy -t "$clipDurationSec" "$newVideoName.mp4"
-            
+
             # Check the correctness of the operation
 			if [[ "$?" == "0" ]]; then
 				echo -e "\n"
