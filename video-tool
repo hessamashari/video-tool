@@ -8,7 +8,9 @@
 # v0.3 --(20180816) add show_version and uninstall function
 # v0.4 --(20180816) add update function and installer script
 # v0.5 --(20180828) add src and src/main directories and move functions to them
-# v0.6 --(20180904) add join file for joining videos
+# v0.6 --(20180904) add join video files for joining videos
+# v0.7 --(20190608) add cut_video_into_clip function
+# v0.8 --(20190608) add convert_video_into_gif function
 
 # author : Hessam Ashari
 # license: GPLv3
