@@ -31,14 +31,14 @@ extract_audio_from_video() {
         read -p "Do you want to rename the audio? [Y/n] " renameAudio
 
         if [[ "$renameAudio" == "" || "$renameAudio" == "Y" || "$renameAudio" == "y" ]]; then
-            read -p "Please write the new name : " audioName
+            read -p "Please write the name : " audioName
 
 			ffmpeg -i "$inputVideo" -vn -y "$audioName.mp3"
 
-
+            # Check the correctness of the operation
             if [[ "$?" == "0" ]]; then
                 echo -e "\n"
-                echo -e "${green}Your audio is ready : ${orange}$audioName${normal}"
+                echo -e "${green}Your audio is ready : ${orange}$audioName.mp3${normal}"
             else
                 echo -e "\n"
                 echo -e "${red}Proccess doesn't finish succesfully!${normal}"
@@ -46,8 +46,8 @@ extract_audio_from_video() {
             fi
         elif [[ "$renameAudio" == "n" || "$renameAudio" == "N" ]]; then
 
-            ffmpeg -i "$inputVideo" -vcodec h264 -acodec aac -strict -2 "$(echo "$inputVideo" | tr '.' ' ').mp4"
-			ffmpeg -i "$inputVideo" -vn -y "$(echo "$inputVideo" | tr '.' ' ').mp4"
+            #ffmpeg -i "$inputVideo" -vcodec h264 -acodec aac -strict -2 "$(echo "$inputVideo" | tr '.' ' ').mp4"
+			ffmpeg -i "$inputVideo" -vn -y "$(echo "$inputVideo" | tr '.' ' ').mp3"
 
             # Check the correctness of the operation
             if [[ "$?" == "0" ]]; then
