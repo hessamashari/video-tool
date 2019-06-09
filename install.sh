@@ -32,7 +32,7 @@ cat <<- EOF
 |          Git repository: https://github.com/hessamashari/video-tool           |
 |          Platform: GNU/Linux                                                  |
 |          LICENSE: GNU GPLv3                                                   |
-|          Version: 0.8                                                         |
+|          Version: 1.0                                                         |
 +-------------------------------------------------------------------------------+
 EOF
 echo -e "\n"

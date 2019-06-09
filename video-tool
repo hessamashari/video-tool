@@ -9,9 +9,10 @@
 # v0.4 --(20180816) add update function and installer script
 # v0.5 --(20180828) add src and src/main directories and move functions to them
 # v0.6 --(20180904) add join video files for joining videos
-# v0.7 --(20190608) add cut_video_into_clip function
-# v0.8 --(20190608) add convert_video_into_gif function
-fix timeline
+# v0.7 --(20190214) add mute_video function
+# v0.8 --(20190214) add extract_audio_from_video function
+# v0.9 --(20190608) add cut_video_into_clip function
+# v1.0 --(20190608) add convert_video_into_gif function
 
 # author : Hessam Ashari
 # license: GPLv3
@@ -81,7 +82,7 @@ main() {
 show_version() {
     echo -e "\n"
 	cat <<- EOF
-	Video_Tool, version v0.8 (x86_64-unknown-linux-gnu)
+	Video_Tool, version v1.0 (x86_64-unknown-linux-gnu)
 	Copyright (C) 2018 Hessam Ashari.
 	License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>
 
